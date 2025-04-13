@@ -9,7 +9,7 @@ const Explore = () => {
 	return (
 		<div className="relative min-h-screen">
 			<div className="flex mt-[7em] sm:mt-[5em]">
-				<div className="mx-auto md:w-[60%] max-w-[40rem]">
+				<div className="ml-auto md:w-[60%] max-w-[40rem]">
 					{posts?.map((post, idx) => (
 						<Post key={idx} post={post} />
 					))}

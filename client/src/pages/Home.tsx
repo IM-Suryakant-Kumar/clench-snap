@@ -21,7 +21,7 @@ const Home = () => {
 	return (
 		<div className="relative min-h-screen">
 			<div className="flex mt-[7em] sm:mt-[5em]">
-				<div className="mx-auto md:w-[60%] max-w-[40rem]">
+				<div className="ml-auto md:w-[60%] max-w-[40rem]">
 					<div className="w-[95%] h-[3rem] mx-auto flex items-center justify-around text-center  mb-[1em]">
 						<span
 							className={`text-logo-cl cursor-pointer uppercase text-sm flex-1 py-[0.5em] border-b-[3px] ${

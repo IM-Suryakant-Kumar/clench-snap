@@ -15,7 +15,7 @@ const HostLayout = () => {
 		<div className="min-h-screen">
 			<Navbar />
 			<Sidebar />
-			<div className="mt-[6em] mb-[4em] sm:mb-0 sm:ml-[10em] sm:mt-[5em]">
+			<div className="mt-[6em] mb-[4em] sm:mb-0 sm:w-[cacl(100%-10rem)] sm:ml-[10em] sm:mt-[5em]">
 				<Outlet />
 				<PostModal />
 			</div>

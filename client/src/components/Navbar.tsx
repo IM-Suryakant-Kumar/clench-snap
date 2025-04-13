@@ -17,24 +17,16 @@ const Navbar = () => {
 	const [searchedText, setSearchedText] = useState<string>("");
 	const [searchedUsers, setSearchedUsers] = useState<IUser[] | []>([]);
 
-	const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) =>
-		setSearchedText(e.target.value);
+	const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => setSearchedText(e.target.value);
 
-	const debounceChangeHandler = useMemo(
-		() => debounce(changeHandler, 1000),
-		[]
-	);
+	const debounceChangeHandler = useMemo(() => debounce(changeHandler, 1000), []);
 
 	useEffect(() => {
 		if (searchedText) {
 			setSearchedUsers(
-				users?.filter(user => {
-					if (user.fullname.toLowerCase().includes(searchedText.toLowerCase()))
-						return true;
-					else if (
-						user.username.toLowerCase().includes(searchedText.toLowerCase())
-					)
-						return true;
+				users?.filter((user) => {
+					if (user.fullname.toLowerCase().includes(searchedText.toLowerCase())) return true;
+					else if (user.username.toLowerCase().includes(searchedText.toLowerCase())) return true;
 					return false;
 				}) as IUser[]
 			);
@@ -44,8 +36,8 @@ const Navbar = () => {
 	}, [searchedText, users]);
 
 	return (
-		<header className="h-[6rem] w-full sm:h-[4rem] bg-secondary-cl px-1 fixed top-0 z-10">
-			<nav className="h-full flex flex-wrap ">
+		<header className="w-full h-[6rem] sm:h-[4rem] bg-secondary-cl px-1 fixed top-0 z-10">
+			<nav className="h-full flex flex-wrap">
 				<div className="w-[75%] sm:w-[34%] flex items-center gap-[0.3125em] sm:gap-2 py-1">
 					<img className="w-7 h-7 sm:h-9 sm:w-9" src={Logo} alt="Logo" />
 					<Link to="/">
@@ -56,7 +48,8 @@ const Navbar = () => {
 				</div>
 				<div
 					className="w-[25%] sm:w-[10%] sm:order-3 flex items-center justify-end pr-[1em] text-[1.5rem] sm:text-[1.8rem] cursor-pointer"
-					onClick={() => navigate("/settings")}>
+					onClick={() => navigate("/settings")}
+				>
 					{user ? (
 						<ProfilePic
 							name={user.fullname}
@@ -86,7 +79,8 @@ const Navbar = () => {
 								onClick={() => {
 									setSearchedUsers([]);
 									setSearchedText("");
-								}}>
+								}}
+							>
 								<SearchModal users={searchedUsers} />
 							</div>
 						)}
