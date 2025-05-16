@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { createUser, guestLogin, login, logout } from "../controllers/auth";
-import { authenticateUser } from "../middleware";
+import { authenticateUser } from "../middlewares";
 
 const router = Router();
 
@@ -9,4 +9,4 @@ router.route("/login").post(login);
 router.route("/guest-login").get(guestLogin);
 router.route("/logout").get(authenticateUser, logout);
 
-export default router;
+export const authRouter = router;

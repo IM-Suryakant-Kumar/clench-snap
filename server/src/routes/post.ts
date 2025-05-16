@@ -5,7 +5,7 @@ import {
 	editPost,
 	getAllPosts,
 } from "../controllers/post";
-import { authenticateUser } from "../middleware";
+import { authenticateUser } from "../middlewares";
 
 const router = Router();
 
@@ -17,4 +17,4 @@ router
 
 router.route("/:postId").delete(authenticateUser, deletePost);
 
-export default router;
+export const postRouter = router;

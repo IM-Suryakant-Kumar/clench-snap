@@ -1,5 +1,4 @@
-import { Request, Response } from "express";
-import { IUser } from "user";
+import { Response } from "express";
 import {
 	BadRequestError,
 	UnauthenticatedError,
@@ -7,16 +6,13 @@ import {
 } from "../errors";
 import { User } from "../models";
 import sendToken from "../utils";
-
-interface IReq extends Request {
-	body: IUser;
-}
+import { asyncWrapper } from "../middlewares";
 
 // Create User
-export const createUser = async (req: Request, res: Response) => {
+export const createUser = asyncWrapper(async (req: any, res: Response) => {
 	const {
 		body: { fullname, username, email, password },
-	} = req as IReq;
+	} = req;
 
 	if (!(fullname && username && email && password))
 		throw new BadRequestError("Please provide all values");
@@ -28,12 +24,12 @@ export const createUser = async (req: Request, res: Response) => {
 
 	const user = await User.create({ fullname, username, email, password });
 	sendToken(user, 200, res, "Successfully registered");
-};
+});
 // Login user
-export const login = async (req: Request, res: Response) => {
+export const login = asyncWrapper(async (req: any, res: Response) => {
 	const {
 		body: { email, password },
-	} = req as IReq;
+	} = req;
 
 	if (!(email && password))
 		throw new BadRequestError("Please provide all values");
@@ -45,9 +41,9 @@ export const login = async (req: Request, res: Response) => {
 	if (!isPasswordCorrect) throw new UnauthorizedError("Invalid credentials!");
 
 	sendToken(user, 200, res, "Successfully logged in");
-};
+});
 // guest login
-export const guestLogin = async (req: Request, res: Response) => {
+export const guestLogin = asyncWrapper(async (req: any, res: Response) => {
 	const user = await User.findOne({ email: "clenchsnap@gmail.com" }).select(
 		"+password"
 	);
@@ -57,11 +53,8 @@ export const guestLogin = async (req: Request, res: Response) => {
 	if (!isPasswordCorrect) throw new UnauthorizedError("Invalid credentials!");
 
 	sendToken(user, 200, res, "Successfully logged in");
-};
+});
 // Logout user
-export const logout = async (req: Request, res: Response) => {
-	res
-		.cookie("token", null, { maxAge: 0, httpOnly: true })
-		.status(200)
-		.json({ success: true, message: "Logged out successfully!" });
-};
+export const logout = asyncWrapper(async (req: any, res: Response) => {
+	res.status(200).json({ success: true, message: "Logged out successfully!" });
+});

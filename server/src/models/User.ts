@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import { IUser } from "user";
+import { sign } from "jsonwebtoken";
+import { IUser } from "../types";
 
 const UserSchema = new Schema<IUser>(
 	{
@@ -31,10 +31,10 @@ const UserSchema = new Schema<IUser>(
 		avatar: { type: String },
 		bio: { type: String },
 		website: { type: String },
-        followers: [ { type: String, required: true } ],
-        followings: [ { type: String, required: true } ]
+		followers: [{ type: String, required: true }],
+		followings: [{ type: String, required: true }],
 	},
-	{ timestamps: true },
+	{ timestamps: true }
 );
 
 UserSchema.pre("save", async function () {
@@ -44,15 +44,15 @@ UserSchema.pre("save", async function () {
 });
 
 UserSchema.methods.comparePassword = async function (
-	candidatePassword: string,
+	candidatePassword: string
 ) {
 	return await bcrypt.compare(candidatePassword, this.password);
 };
 
 UserSchema.methods.createJWTToken = function () {
-	const JWT_SECRET: string = process.env.JWT_SECRET;
-	const JWT_LIFETIME: string = process.env.JWT_LIFETIME;
-	return jwt.sign({ _id: this._id }, JWT_SECRET, { expiresIn: JWT_LIFETIME });
+	return sign({ userId: this._id }, process.env.JWT_SECRET as string, {
+		expiresIn: "5d",
+	});
 };
 
-export default model<IUser>("User", UserSchema);
+export default model<IUser | any>("User", UserSchema);

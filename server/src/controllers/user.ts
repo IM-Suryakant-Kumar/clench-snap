@@ -1,26 +1,22 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import { User } from "../models";
-import { IUser } from "user";
-
-interface IReq extends Request {
-	user: IUser;
-}
+import { asyncWrapper } from "../middlewares";
 
 // get logged-in user
-export const getLoggedInUser = async (req: Request, res: Response) => {
+export const getLoggedInUser = asyncWrapper(async (req: any, res: Response) => {
 	const {
 		user: { _id },
-	} = req as IReq;
+	} = req;
 
 	const user = await User.findById(_id);
 	res.status(200).json({ success: true, user });
-};
+});
 
-export const updateUser = async (req: Request, res: Response) => {
+export const updateUser = asyncWrapper(async (req: any, res: Response) => {
 	const {
 		user: { _id },
 		body,
-	} = req as IReq;
+	} = req;
 
 	await User.findByIdAndUpdate(req.body._id, body, {
 		new: true,
@@ -35,9 +31,9 @@ export const updateUser = async (req: Request, res: Response) => {
 		user,
 		users,
 	});
-};
+});
 
-export const getAllusers = async (req: Request, res: Response) => {
+export const getAllusers = asyncWrapper(async (req: any, res: Response) => {
 	const users = await User.find();
 	res.status(200).json({ success: true, users });
-};
+});

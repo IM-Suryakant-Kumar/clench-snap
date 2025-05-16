@@ -1,3 +1,15 @@
+export interface IUser {
+	fullname: string;
+	username: string;
+	email: string;
+	avatar: string;
+	bio: string;
+	website: string;
+	password: string;
+	followers: string[];
+	followings: string[];
+}
+
 interface IComment {
 	userName: string;
 	avatar: string;
@@ -5,7 +17,6 @@ interface IComment {
 }
 
 export interface IPost {
-    _id: string;
 	userId: string;
 	userName: string;
 	avatar: string;

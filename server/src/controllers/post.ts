@@ -1,21 +1,16 @@
-import { IUser } from "user";
-import { Request, Response } from "express";
+import { Response } from "express";
 import { Post } from "../models";
+import { asyncWrapper } from "../middlewares";
 
-interface IReq extends Request {
-	user: IUser;
-	params: { postId: string };
-}
-
-export const getAllPosts = async (req: Request, res: Response) => {
+export const getAllPosts = async (req: any, res: Response) => {
 	const posts = await Post.find();
 	res.status(200).json({ success: true, posts });
 };
 
-export const createPost = async (req: Request, res: Response) => {
+export const createPost = asyncWrapper(async (req: any, res: Response) => {
 	const {
 		user: { _id, fullname, avatar },
-	} = req as IReq;
+	} = req;
 
 	await Post.create({
 		userId: _id,
@@ -31,12 +26,12 @@ export const createPost = async (req: Request, res: Response) => {
 		message: "Successfully posted",
 		posts,
 	});
-};
+});
 
-export const editPost = async (req: Request, res: Response) => {
+export const editPost = asyncWrapper(async (req: any, res: Response) => {
 	const {
 		user: { _id },
-	} = req as IReq;
+	} = req;
 
 	await Post.findByIdAndUpdate(req.body._id, req.body, {
 		new: true,
@@ -49,12 +44,12 @@ export const editPost = async (req: Request, res: Response) => {
 		message: "Successfully updated",
 		posts,
 	});
-};
+});
 
-export const deletePost = async (req: Request, res: Response) => {
+export const deletePost = asyncWrapper(async (req: any, res: Response) => {
 	const {
 		params: { postId },
-	} = req as IReq;
+	} = req;
 
 	await Post.findByIdAndDelete(postId, {
 		new: true,
@@ -67,4 +62,4 @@ export const deletePost = async (req: Request, res: Response) => {
 		message: "Successfully deleted",
 		posts,
 	});
-};
+});

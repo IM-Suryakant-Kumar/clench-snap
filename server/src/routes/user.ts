@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { getAllusers, getLoggedInUser, updateUser } from "../controllers/user";
-import { authenticateUser } from "../middleware";
+import { authenticateUser } from "../middlewares";
 
 const router = Router();
 
@@ -11,4 +11,4 @@ router
 
 router.route("/").get(getAllusers);
 
-export default router;
+export const userRouter = router;
