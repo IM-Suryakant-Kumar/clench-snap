@@ -1,6 +1,6 @@
-import { Link, Outlet, useParams } from "react-router-dom";
+import { Link, Outlet, useParams } from "react-router";
 import { useLoading, usePost, useUser } from "../contexts";
-import { NavLink } from "react-router-dom";
+import { NavLink } from "react-router";
 import { ProfilePic } from "../components";
 import { IUser } from "../types";
 import { loadingWrapper } from "../utils";

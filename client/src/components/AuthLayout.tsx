@@ -1,4 +1,4 @@
-import { LoaderFunctionArgs, Outlet, redirect } from "react-router-dom";
+import { LoaderFunctionArgs, Outlet, redirect } from "react-router";
 import { getLoggedInUser } from "../apis";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {

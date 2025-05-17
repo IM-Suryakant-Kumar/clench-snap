@@ -1,38 +1,23 @@
+import { asyncWrapper } from "../middlewares";
 import { Response } from "express";
+import { User } from "../models";
+import sendToken from "../utils";
 import {
 	BadRequestError,
 	UnauthenticatedError,
 	UnauthorizedError,
 } from "../errors";
-import { User } from "../models";
-import sendToken from "../utils";
-import { asyncWrapper } from "../middlewares";
 
-// Create User
-export const createUser = asyncWrapper(async (req: any, res: Response) => {
-	const {
-		body: { fullname, username, email, password },
-	} = req;
-
-	if (!(fullname && username && email && password))
-		throw new BadRequestError("Please provide all values");
-
-	const emailAlreadyExists = await User.findOne({ email });
-	if (emailAlreadyExists) {
-		throw new BadRequestError("Email is already exists");
-	}
-
-	const user = await User.create({ fullname, username, email, password });
-	sendToken(user, 200, res, "Successfully registered");
+export const signup = asyncWrapper(async (req: any, res: Response) => {
+	const user = await User.create(req.body);
+	sendToken(user, 201, res, "Successfully signed up.");
 });
-// Login user
+
 export const login = asyncWrapper(async (req: any, res: Response) => {
-	const {
-		body: { email, password },
-	} = req;
+	const { email, password } = req.body;
 
 	if (!(email && password))
-		throw new BadRequestError("Please provide all values");
+		throw new BadRequestError("Email and password is required.");
 
 	const user = await User.findOne({ email }).select("+password");
 	if (!user) throw new UnauthenticatedError("Invalid Credentials!");
@@ -42,19 +27,17 @@ export const login = asyncWrapper(async (req: any, res: Response) => {
 
 	sendToken(user, 200, res, "Successfully logged in");
 });
-// guest login
-export const guestLogin = asyncWrapper(async (req: any, res: Response) => {
-	const user = await User.findOne({ email: "clenchsnap@gmail.com" }).select(
-		"+password"
-	);
-	if (!user) throw new UnauthenticatedError("Invalid Credentials!");
 
-	const isPasswordCorrect = await user.comparePassword("secret");
-	if (!isPasswordCorrect) throw new UnauthorizedError("Invalid credentials!");
-
-	sendToken(user, 200, res, "Successfully logged in");
-});
-// Logout user
 export const logout = asyncWrapper(async (req: any, res: Response) => {
-	res.status(200).json({ success: true, message: "Logged out successfully!" });
+	res.status(200).json({ success: true, message: "Successfully logged out." });
+});
+
+export const getProfile = asyncWrapper(async (req: any, res: Response) => {
+	res.status(200).json({ success: true, user: req.user });
+});
+
+export const updateProfile = asyncWrapper(async (req: any, res: Response) => {
+	const { user, body } = req;
+	await User.findByIdAndUpdate(user._id, body);
+	res.status(200).json({ success: true, message: "Successfully Updated!" });
 });

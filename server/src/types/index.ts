@@ -1,28 +1,27 @@
 export interface IUser {
-	fullname: string;
+	name: string;
 	username: string;
 	email: string;
 	avatar: string;
 	bio: string;
 	website: string;
 	password: string;
-	followers: string[];
-	followings: string[];
-}
-
-interface IComment {
-	userName: string;
-	avatar: string;
-	content: string;
+	followers: IUser[];
+	followings: IUser[];
+  liked: IPost[];
+  saved: IPost[];
+  posts: IPost[];
 }
 
 export interface IPost {
-	userId: string;
-	userName: string;
-	avatar: string;
+	author: IUser;
 	content: string;
 	image: string;
-	liked: string[];
-	saved: string[];
 	comments: IComment[];
+}
+
+export interface IComment {
+  post: IPost;
+	author: IUser;
+	content: string;
 }

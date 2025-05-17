@@ -1,5 +1,4 @@
 export { default as NotFound } from "./NotFound";
-export { default as Error } from "./Error";
 export { default as Landing } from "./Landing";
 export { default as Home } from "./Home";
 export { default as Post } from "./Post";

@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { MdOutlineModeEditOutline } from "react-icons/md";
 import { useLoading, useUser } from "../contexts";
 import { useState } from "react";

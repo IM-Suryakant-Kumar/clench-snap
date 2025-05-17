@@ -3,20 +3,32 @@ import bcrypt from "bcryptjs";
 import { sign } from "jsonwebtoken";
 import { IUser } from "../types";
 
-const UserSchema = new Schema<IUser>(
+const userSchema = new Schema<IUser>(
 	{
-		fullname: {
+		name: {
 			type: String,
-			required: [true, "fullname is required"],
-			maxlength: 20,
-			minlength: 3,
+			required: [true, "name is required"],
+			minlength: [
+				3,
+				"Name should not be less than 3 greater than 20 characters",
+			],
+			maxlength: [
+				20,
+				"Name should not be less than 3 greater than 20 characters",
+			],
 		},
 		username: {
 			type: String,
 			required: [true, "username is required"],
+			minlength: [
+				3,
+				"Username should not be less than 3 greater than 20 characters",
+			],
+			maxlength: [
+				20,
+				"Username should not be less than 3 greater than 20 characters",
+			],
 			unique: true,
-			maxlength: 20,
-			minlength: 3,
 		},
 		email: {
 			type: String,
@@ -26,33 +38,37 @@ const UserSchema = new Schema<IUser>(
 		password: {
 			type: String,
 			required: [true, "password is required"],
+			minlength: [3, "Password should not be less than 3 characters"],
 			select: false,
 		},
 		avatar: { type: String },
 		bio: { type: String },
 		website: { type: String },
-		followers: [{ type: String, required: true }],
-		followings: [{ type: String, required: true }],
+		followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
+		followings: [{ type: Schema.Types.ObjectId, ref: "User" }],
+		liked: [{ type: Schema.Types.ObjectId, ref: "Post" }],
+		saved: [{ type: Schema.Types.ObjectId, ref: "Post" }],
+		posts: [{ type: Schema.Types.ObjectId, ref: "Post" }],
 	},
 	{ timestamps: true }
 );
 
-UserSchema.pre("save", async function () {
+userSchema.pre("save", async function () {
 	if (!this.isModified("password")) return;
 	const salt = await bcrypt.genSalt(10);
 	this.password = await bcrypt.hash(this.password, salt);
 });
 
-UserSchema.methods.comparePassword = async function (
+userSchema.methods.comparePassword = async function (
 	candidatePassword: string
 ) {
 	return await bcrypt.compare(candidatePassword, this.password);
 };
 
-UserSchema.methods.createJWTToken = function () {
-	return sign({ userId: this._id }, process.env.JWT_SECRET as string, {
+userSchema.methods.createJWTToken = function () {
+	return sign({ ...this._doc }, process.env.JWT_SECRET as string, {
 		expiresIn: "5d",
 	});
 };
 
-export default model<IUser | any>("User", UserSchema);
+export const User = model<IUser | any>("User", userSchema);

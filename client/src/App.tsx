@@ -1,9 +1,4 @@
-import {
-	Route,
-	RouterProvider,
-	createBrowserRouter,
-	createRoutesFromElements,
-} from "react-router-dom";
+import { RouterProvider, createBrowserRouter } from "react-router";
 import {
 	AuthLayout,
 	HostLayout,
@@ -12,7 +7,6 @@ import {
 	hostLayoutLoader,
 } from "./components";
 import {
-	Error,
 	Explore,
 	Home,
 	Landing,
@@ -28,35 +22,47 @@ import {
 } from "./pages";
 
 function App() {
-	const router = createBrowserRouter(
-		createRoutesFromElements(
-			<Route path="/" element={<Layout />} errorElement={<Error />}>
-				<Route index element={<Landing />} />
-				<Route element={<HostLayout />} loader={hostLayoutLoader}>
-					<Route path="home" element={<Home />} />
-					<Route path="explore" element={<Explore />} />
-					<Route element={<Profile />}>
-						<Route path="profile/:username/post" element={<ProfilePost />} />
-						<Route
-							path="profile/:username/liked"
-							element={<ProfileLikedPost />}
-						/>
-						<Route
-							path="profile/:username/saved"
-							element={<ProfileSavedPost />}
-						/>
-					</Route>
-					<Route path="settings" element={<Setting />} />
-					<Route path="post/:postId" element={<Post />} />
-				</Route>
-				<Route element={<AuthLayout />} loader={authLayoutLoader}>
-					<Route path="login" element={<Login />} />
-					<Route path="signup" element={<Signup />} />
-				</Route>
-				<Route path="*" element={<NotFound />} />
-			</Route>
-		)
-	);
+	const router = createBrowserRouter([
+		{
+			Component: Layout,
+			children: [
+				{ path: "/", Component: Landing },
+				{
+					Component: HostLayout,
+					loader: hostLayoutLoader,
+					children: [
+						{ path: "home", Component: Home },
+						{ path: "explore", Component: Explore },
+						{
+							Component: Profile,
+							children: [
+								{ path: "profile/:username/post", Component: ProfilePost },
+								{
+									path: "profile/:username/liked",
+									Component: ProfileLikedPost,
+								},
+								{
+									path: "profile/:username/saved",
+									Component: ProfileSavedPost,
+								},
+							],
+						},
+						{ path: "settings", Component: Setting },
+						{ path: "post/:postId", Component: Post },
+					],
+				},
+				{
+					Component: AuthLayout,
+					loader: authLayoutLoader,
+					children: [
+						{ path: "login", Component: Login },
+						{ path: "signup", Component: Signup },
+					],
+				},
+			],
+		},
+		{ path: "*", Component: NotFound },
+	]);
 
 	return <RouterProvider router={router} />;
 }

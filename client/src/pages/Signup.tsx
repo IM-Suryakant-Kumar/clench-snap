@@ -1,5 +1,5 @@
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router";
+import { Link } from "react-router";
 import { signup } from "../apis/auth";
 import { useLoading, useUser } from "../contexts";
 import { useState } from "react";

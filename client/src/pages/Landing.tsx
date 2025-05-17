@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import Hero from "../assets/hero.svg";
 import Logo from "../assets/share.svg";
 

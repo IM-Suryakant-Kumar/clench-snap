@@ -4,7 +4,7 @@ import {
 	MdOutlinePersonOutline,
 	MdOutlineSettings,
 } from "react-icons/md";
-import { NavLink } from "react-router-dom";
+import { NavLink } from "react-router";
 import { useUser } from "../contexts";
 
 const Sidebar = () => {

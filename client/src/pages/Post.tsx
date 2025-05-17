@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import { useLoading, usePost, useUser } from "../contexts";
 import { useState } from "react";
 import { HiOutlineDotsVertical } from "react-icons/hi";

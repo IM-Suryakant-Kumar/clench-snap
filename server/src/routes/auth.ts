@@ -1,12 +1,21 @@
 import { Router } from "express";
-import { createUser, guestLogin, login, logout } from "../controllers/auth";
+import {
+	getProfile,
+	login,
+	logout,
+	signup,
+	updateProfile,
+} from "../controllers";
 import { authenticateUser } from "../middlewares";
 
 const router = Router();
 
-router.route("/register").post(createUser);
+router.route("/signup").post(signup);
 router.route("/login").post(login);
-router.route("/guest-login").get(guestLogin);
 router.route("/logout").get(authenticateUser, logout);
+router
+	.route("/me")
+	.get(authenticateUser, getProfile)
+	.patch(authenticateUser, updateProfile);
 
 export const authRouter = router;

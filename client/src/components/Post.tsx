@@ -1,6 +1,6 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { FaHeart, FaRegComment, FaRegHeart } from "react-icons/fa";
 import { MdBookmark, MdOutlineBookmarkBorder } from "react-icons/md";

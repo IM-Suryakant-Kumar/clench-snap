@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import Logo from "../assets/share.svg";
 import { MdSearch } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";

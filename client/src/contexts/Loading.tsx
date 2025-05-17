@@ -1,22 +1,22 @@
-import { createContext, useReducer, useContext } from "react";
-import { ILoadingState } from "../types";
+import { createContext, useReducer, useContext, FC } from "react";
 import { loadingInitialState, loadingReducer } from "../reducers";
 
-export interface ILoadingContext {
-	loadingState: ILoadingState;
-	loadingStart: () => void;
-	loadingStop: () => void;
-	submittingStart: () => void;
-	submittingStop: () => void;
-}
+const intialLoadingContext = {
+	loadingState: loadingInitialState,
+	loadingStart: () => {},
+	loadingStop: () => {},
+	submittingStart: () => {},
+	submittingStop: () => {},
+};
 
-const LoadingContext = createContext<ILoadingContext | null>(null);
+const LoadingContext = createContext(intialLoadingContext);
+export const useLoading = () => useContext(LoadingContext);
 
 type Props = {
 	children: React.ReactNode;
 };
 
-const LoadingContextProvider: React.FC<Props> = ({ children }) => {
+export const LoadingContextProvider: FC<Props> = ({ children }) => {
 	const [loadingState, loadingDispatch] = useReducer(
 		loadingReducer,
 		loadingInitialState
@@ -25,28 +25,28 @@ const LoadingContextProvider: React.FC<Props> = ({ children }) => {
 	const loadingStart = () => {
 		loadingDispatch({
 			type: "LOADING",
-			payload: true,
+			value: true,
 		});
 	};
 
 	const loadingStop = () => {
 		loadingDispatch({
 			type: "LOADING",
-			payload: false,
+			value: false,
 		});
 	};
 
 	const submittingStart = () => {
 		loadingDispatch({
 			type: "SUBMITTING",
-			payload: true,
+			value: true,
 		});
 	};
 
 	const submittingStop = () => {
 		loadingDispatch({
 			type: "SUBMITTING",
-			payload: false,
+			value: false,
 		});
 	};
 
@@ -64,7 +64,3 @@ const LoadingContextProvider: React.FC<Props> = ({ children }) => {
 		</LoadingContext.Provider>
 	);
 };
-
-const useLoading = () => useContext(LoadingContext) as ILoadingContext;
-
-export { LoadingContextProvider, useLoading };

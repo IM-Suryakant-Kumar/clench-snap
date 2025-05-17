@@ -3,9 +3,13 @@ import express from "express";
 import helmet from "helmet";
 import cors from "cors";
 import morgan from "morgan";
-import { errorHandlerMiddleware, notFoundMiddleware } from "./middlewares";
+import {
+	authenticateUser,
+	errorHandlerMiddleware,
+	notFoundMiddleware,
+} from "./middlewares";
 import connectDB from "./db";
-import { authRouter, postRouter, userRouter } from "./routes";
+import { authRouter, commentRouter, postRouter, userRouter } from "./routes";
 
 const PORT = process.env.PORT;
 const MONGO_URI = process.env.MONGO_URI;
@@ -19,8 +23,9 @@ app.use(morgan("dev"));
 app.use(cors({ origin: CLIENT_URL, credentials: true }));
 
 app.use("/auth", authRouter);
-app.use("/user", userRouter);
-app.use("/post", postRouter);
+app.use("/user", authenticateUser, userRouter);
+app.use("/post", authenticateUser, postRouter);
+app.use("/comment", authenticateUser, commentRouter);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);

@@ -1,16 +1,5 @@
 import { IPost, IUser } from ".";
 
-
-// loading
-export interface ILoadingState {
-	loading: boolean;
-	submitting: boolean;
-}
-export interface ILoadingAction {
-	type: string;
-	payload: boolean;
-}
-
 // user
 export interface IUserState {
 	user?: IUser | null;

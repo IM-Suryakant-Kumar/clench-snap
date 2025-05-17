@@ -32,5 +32,6 @@ export const errorHandlerMiddleware = (
 	res.status(customError.statusCode).json({
 		success: false,
 		message: customError.message,
+    err
 	});
 };

@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { useLoading, useUser } from "../contexts";
 import { ProfilePic } from ".";
 import { IUser } from "../types";

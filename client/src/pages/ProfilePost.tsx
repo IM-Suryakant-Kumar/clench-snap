@@ -1,6 +1,6 @@
 // const post
 
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext } from "react-router";
 import { Post } from "../components";
 import { IPost } from "../types";
 

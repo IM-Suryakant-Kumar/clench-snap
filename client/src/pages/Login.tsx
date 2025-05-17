@@ -1,5 +1,4 @@
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useNavigate, useSearchParams, Link } from "react-router";
 import { useState } from "react";
 import { guestLogin, login } from "../apis/auth";
 import { useLoading, useUser } from "../contexts";

@@ -1,4 +1,4 @@
-import { LoaderFunctionArgs, Outlet, redirect } from "react-router-dom";
+import { LoaderFunctionArgs, Outlet, redirect } from "react-router";
 import { Navbar, PostModal, Sidebar } from ".";
 import { getLoggedInUser } from "../apis";
 
