@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router";
 import Logo from "../assets/share.svg";
 import { MdSearch } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
-import { useUser } from "../contexts";
+import { useAuth, useUser } from "../contexts";
 import { useEffect, useMemo, useState } from "react";
 import { ProfilePic, SearchModal } from ".";
 import { IUser } from "../types";
@@ -11,22 +11,33 @@ import { debounce } from "../utils";
 const Navbar = () => {
 	const navigate = useNavigate();
 	const {
-		userState: { user, users },
+		authState: { user },
+	} = useAuth();
+	const {
+		userState: { users },
 	} = useUser();
 
 	const [searchedText, setSearchedText] = useState<string>("");
 	const [searchedUsers, setSearchedUsers] = useState<IUser[] | []>([]);
 
-	const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => setSearchedText(e.target.value);
+	const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) =>
+		setSearchedText(e.target.value);
 
-	const debounceChangeHandler = useMemo(() => debounce(changeHandler, 1000), []);
+	const debounceChangeHandler = useMemo(
+		() => debounce(changeHandler, 1000),
+		[]
+	);
 
 	useEffect(() => {
 		if (searchedText) {
 			setSearchedUsers(
 				users?.filter((user) => {
-					if (user.fullname.toLowerCase().includes(searchedText.toLowerCase())) return true;
-					else if (user.username.toLowerCase().includes(searchedText.toLowerCase())) return true;
+					if (user.name.toLowerCase().includes(searchedText.toLowerCase()))
+						return true;
+					else if (
+						user.username.toLowerCase().includes(searchedText.toLowerCase())
+					)
+						return true;
 					return false;
 				}) as IUser[]
 			);
@@ -52,7 +63,7 @@ const Navbar = () => {
 				>
 					{user ? (
 						<ProfilePic
-							name={user.fullname}
+							name={user.name}
 							avatar={user.avatar}
 							width="1.5rem"
 							height="1.5rem"

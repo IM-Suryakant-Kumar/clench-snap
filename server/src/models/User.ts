@@ -46,8 +46,6 @@ const userSchema = new Schema<IUser>(
 		website: { type: String },
 		followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
 		followings: [{ type: Schema.Types.ObjectId, ref: "User" }],
-		liked: [{ type: Schema.Types.ObjectId, ref: "Post" }],
-		saved: [{ type: Schema.Types.ObjectId, ref: "Post" }],
 		posts: [{ type: Schema.Types.ObjectId, ref: "Post" }],
 	},
 	{ timestamps: true }
@@ -66,7 +64,7 @@ userSchema.methods.comparePassword = async function (
 };
 
 userSchema.methods.createJWTToken = function () {
-	return sign({ ...this._doc }, process.env.JWT_SECRET as string, {
+	return sign({ _id: this._id }, process.env.JWT_SECRET as string, {
 		expiresIn: "5d",
 	});
 };

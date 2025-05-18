@@ -1,6 +1,5 @@
-import { useNavigate } from "react-router";
 import { MdOutlineModeEditOutline } from "react-icons/md";
-import { useLoading, useUser } from "../contexts";
+import { useAuth, useLoading } from "../contexts";
 import { useState } from "react";
 import { clodinary } from "../apis";
 import { toast } from "react-toastify";
@@ -9,12 +8,11 @@ import { IUser } from "../types";
 import { loadingWrapper } from "../utils";
 
 const Setting = () => {
-	const navigate = useNavigate();
 	const {
-		userState: { user },
-		getLogout,
+		authState: { user },
+		logout,
 		updateProfile,
-	} = useUser();
+	} = useAuth();
 	const {
 		loadingState: { loading, submitting },
 		loadingStart,
@@ -35,7 +33,7 @@ const Setting = () => {
 		e.preventDefault();
 		const fn = async () => {
 			const formData = new FormData(e.currentTarget);
-			const fullname = formData.get("fullname");
+			const name = formData.get("name");
 			const username = formData.get("username");
 			const email = formData.get("email");
 			let avatar: string = user?.avatar as string;
@@ -47,7 +45,7 @@ const Setting = () => {
 
 			await updateProfile({
 				_id: user?._id,
-				fullname,
+				name,
 				username,
 				email,
 				avatar,
@@ -63,8 +61,7 @@ const Setting = () => {
 
 	const handleLogout = async () => {
 		const fn = async () => {
-			await getLogout();
-			navigate("/");
+			await logout();
 		};
 		loadingWrapper(loadingStart, loadingStop, fn);
 	};
@@ -73,14 +70,15 @@ const Setting = () => {
 		<form
 			spellCheck={false}
 			className="flex flex-col items-center gap-[0.5em]"
-			onSubmit={handleSubmit}>
+			onSubmit={handleSubmit}
+		>
 			<div className="w-[80%] max-w-[25rem] h-[8rem] flex justify-center items-center mb-[2em]">
 				<div className="w-[6rem] h-[6rem] relative z-0">
 					<ProfilePic
 						width="6rem"
 						height="6rem"
 						size="2rem"
-						name={user?.fullname as string}
+						name={user?.name as string}
 						avatar={imagePreview || (user?.avatar as string)}
 					/>
 					<input
@@ -95,23 +93,25 @@ const Setting = () => {
 					</div>
 				</div>
 			</div>
-			{/* fullname */}
+			{/* name */}
 			<label
-				htmlFor="fullname"
-				className="w-[80%] max-w-[25rem] pl-[0.2em] mt-[0.5em] -mb-[0.5em]">
-				Full Name
+				htmlFor="name"
+				className="w-[80%] max-w-[25rem] pl-[0.2em] mt-[0.5em] -mb-[0.5em]"
+			>
+				Name
 			</label>
 			<input
 				className="w-[80%] max-w-[25rem] py-[0.1em] outline-none border-2 border-logo-cl rounded-lg pl-[0.4em] bg-inherit"
 				type="text"
-				id="fullname"
-				name="fullname"
-				defaultValue={user?.fullname}
+				id="name"
+				name="name"
+				defaultValue={user?.name}
 			/>
 			{/* username */}
 			<label
 				htmlFor="username"
-				className="w-[80%] max-w-[25rem] pl-[0.2em] mt-[0.5em] -mb-[0.5em]">
+				className="w-[80%] max-w-[25rem] pl-[0.2em] mt-[0.5em] -mb-[0.5em]"
+			>
 				Username
 			</label>
 			<input
@@ -124,7 +124,8 @@ const Setting = () => {
 			{/* email */}
 			<label
 				htmlFor="email"
-				className="w-[80%] max-w-[25rem] pl-[0.2em] mt-[0.5em] -mb-[0.5em]">
+				className="w-[80%] max-w-[25rem] pl-[0.2em] mt-[0.5em] -mb-[0.5em]"
+			>
 				Email
 			</label>
 			<input
@@ -137,7 +138,8 @@ const Setting = () => {
 			{/* Bio */}
 			<label
 				htmlFor="bio"
-				className="w-[80%] max-w-[25rem] pl-[0.2em] mt-[0.5em] -mb-[0.5em]">
+				className="w-[80%] max-w-[25rem] pl-[0.2em] mt-[0.5em] -mb-[0.5em]"
+			>
 				Bio
 			</label>
 			<textarea
@@ -149,7 +151,8 @@ const Setting = () => {
 			{/* Website */}
 			<label
 				htmlFor="bio"
-				className="w-[80%] max-w-[25rem] pl-[0.2em] mt-[0.5em] -mb-[0.5em]">
+				className="w-[80%] max-w-[25rem] pl-[0.2em] mt-[0.5em] -mb-[0.5em]"
+			>
 				Website
 			</label>
 			<input
@@ -162,13 +165,15 @@ const Setting = () => {
 			<button
 				type="submit"
 				className="w-[80%] h-[2rem] max-w-[25rem] bg-logo-cl text-primary-cl rounded-lg mt-[2.5em] mb-[0.4em]"
-				disabled={submitting}>
+				disabled={submitting}
+			>
 				{submitting ? "SAVING..." : "SAVE"}
 			</button>
 			<button
 				className="w-[80%] h-[2rem] max-w-[25rem] bg-logo-cl text-primary-cl rounded-lg"
 				onClick={handleLogout}
-				disabled={loading}>
+				disabled={loading}
+			>
 				{loading ? "Logging out..." : "Logout"}
 			</button>
 		</form>

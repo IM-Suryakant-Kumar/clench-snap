@@ -21,9 +21,9 @@ const SearchModal: React.FC<Props> = ({ users }) => {
 							height="2rem"
 							size="0.6rem"
 							avatar={user.avatar}
-							name={user.fullname}
+							name={user.name}
 						/>
-						<p>{user.fullname}</p>
+						<p>{user.name}</p>
 					</Link>
 				))}
 			</div>

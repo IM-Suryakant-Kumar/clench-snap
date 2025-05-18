@@ -4,11 +4,11 @@ interface ILoadingState {
 }
 
 type ILoadingAction = {
-	type: "LOADING" | "SUBMITTING";
+	type: "loading" | "submitting";
 	value: boolean;
 };
 
-export const loadingInitialState: ILoadingState = {
+export const initialLoadingState: ILoadingState = {
 	loading: false,
 	submitting: false,
 };
@@ -18,11 +18,14 @@ export const loadingReducer = (
 	action: ILoadingAction
 ) => {
 	switch (action.type) {
-		case "LOADING":
+		case "loading": {
 			return { ...state, loading: action.value };
-		case "SUBMITTING":
+		}
+		case "submitting": {
 			return { ...state, submitting: action.value };
-		default:
+		}
+		default: {
 			return state;
+		}
 	}
 };

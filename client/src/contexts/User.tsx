@@ -1,99 +1,59 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
-import { createContext, useReducer, useContext, useCallback } from "react";
-import { IUser, IUserState } from "../types";
+import {
+	createContext,
+	useReducer,
+	useContext,
+	useCallback,
+	useEffect,
+	useMemo,
+} from "react";
 import { userInitialState, userReducer } from "../reducers";
-import { getAllusers, getLoggedInUser, logout, updateUser } from "../apis";
-import { toast } from "react-toastify";
+import { getUsers as getUsersApi } from "../apis";
+import { useAuth } from "./Auth";
 
 interface IUserContext {
-	userState: IUserState;
-	getLogout: () => Promise<void>;
-	getProfile: () => Promise<void>;
-	getAllUser: () => Promise<void>;
-	updateProfile: ({
-		fullname,
-		username,
-		email,
-		avatar,
-		bio,
-		website,
-	}: IUser) => Promise<void>;
-	// getFollowers: () => Promise<void>;
-	// getFollowings: () => Promise<void>;
+	userState: typeof userInitialState;
+	getUsers: () => Promise<void>;
 }
 
 const UserContext = createContext<IUserContext | null>(null);
+export const useUser = () => useContext(UserContext) as IUserContext;
 
 type Props = {
 	children: React.ReactNode;
 };
 
-const UserContextProvider: React.FC<Props> = ({ children }) => {
-	const [userState, userDispatch] = useReducer(userReducer, userInitialState);
+export const UserContextProvider: React.FC<Props> = ({ children }) => {
+	const [userState, dispatch] = useReducer(userReducer, userInitialState);
+	const memoizedState = useMemo(() => userState, [userState]);
+	const { authState } = useAuth();
 
-	// get logout
-	const getLogout = useCallback(async () => {
-		const { success } = await logout();
+	const getUsers = useCallback(async () => {
+		const { success, users } = await getUsersApi();
 		success &&
-			userDispatch({
-				type: "GET_LOGOUT",
-				payload: { user: null },
-			});
-	}, []);
-	// get profile
-	const getProfile = useCallback(async () => {
-		const { success, user } = await getLoggedInUser();
-		success &&
-			userDispatch({
-				type: "GET_PROFILE",
-				payload: { user },
-			});
-	}, []);
-	// update profile
-	const updateProfile = useCallback(async (newUser: IUser) => {
-		const { success, user, users, message } = await updateUser(
-			newUser as IUser
-		);
-		success
-			? userDispatch({
-					type: "UPDATE_PROFILE",
-					payload: { user, users },
-			  })
-			: toast.error(message, {
-					autoClose: 6000,
-					hideProgressBar: false,
-					closeOnClick: true,
-					pauseOnHover: true,
-			  });
-	}, []);
-
-	const getAllUser = useCallback(async () => {
-		const { success, users } = await getAllusers();
-		success &&
-			userDispatch({
-				type: "GET_ALL_USER",
+			dispatch({
+				type: "get_users",
 				payload: { users },
 			});
 	}, []);
 
-	// const getFollowers = async () => {};
-	// const getFollowings = async () => {};
+	useEffect(() => {
+		let ignore = false;
+		if (!ignore) {
+			getUsers();
+		}
+
+		return () => {
+			ignore = true;
+		};
+	}, [getUsers, authState]);
 
 	const providerItem = {
-		userState,
-		getLogout,
-		getProfile,
-		updateProfile,
-		getAllUser,
-		// getFollowers,
-		// getFollowings,
+		userState: memoizedState,
+		getUsers,
 	};
 
 	return (
 		<UserContext.Provider value={providerItem}>{children}</UserContext.Provider>
 	);
 };
-
-const useUser = () => useContext(UserContext) as IUserContext;
-
-export { UserContextProvider, useUser };

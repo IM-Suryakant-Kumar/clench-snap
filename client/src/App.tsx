@@ -1,11 +1,5 @@
 import { RouterProvider, createBrowserRouter } from "react-router";
-import {
-	AuthLayout,
-	HostLayout,
-	Layout,
-	authLayoutLoader,
-	hostLayoutLoader,
-} from "./components";
+import { AuthLayout, HostLayout, Layout } from "./components";
 import {
 	Explore,
 	Home,
@@ -29,7 +23,6 @@ function App() {
 				{ path: "/", Component: Landing },
 				{
 					Component: HostLayout,
-					loader: hostLayoutLoader,
 					children: [
 						{ path: "home", Component: Home },
 						{ path: "explore", Component: Explore },
@@ -53,7 +46,6 @@ function App() {
 				},
 				{
 					Component: AuthLayout,
-					loader: authLayoutLoader,
 					children: [
 						{ path: "login", Component: Login },
 						{ path: "signup", Component: Signup },

@@ -8,15 +8,15 @@ export interface IUser {
 	password: string;
 	followers: IUser[];
 	followings: IUser[];
-  liked: IPost[];
-  saved: IPost[];
   posts: IPost[];
 }
 
 export interface IPost {
-	author: IUser;
+  author: IUser;
 	content: string;
 	image: string;
+  liked: IPost[];
+  saved: IPost[];
 	comments: IComment[];
 }
 

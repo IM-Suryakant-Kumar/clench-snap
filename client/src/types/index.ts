@@ -7,37 +7,37 @@ export interface IUser {
 	bio: string;
 	website: string;
 	password: string;
-	followers: IUser[];
-	followings: IUser[];
-	liked: IPost[];
-	saved: IPost[];
-	posts: IPost[];
+	followers: string[];
+	followings: string[];
+	posts: string[];
 }
 
 export interface IPost {
 	_id: string;
-	author: IUser;
+	author: string;
 	content: string;
 	image: string;
-	comments: IComment[];
+	liked: string[];
+	saved: string[];
+	comments: string[];
 }
 
 export interface IComment {
 	_id: string;
-	post: IPost;
-	author: IUser;
+	post: string;
+	author: string;
 	content: string;
 }
 
 // response
 export type TData = {
 	success: boolean;
-	message?: string;
-	token?: string;
-	user?: IUser;
-	users?: IUser[];
-	posts?: IPost[];
-	comments?: IComment[];
+	message: string;
+	token: string;
+	user: IUser;
+	users: IUser[];
+	posts: IPost[];
+	comments: IComment[];
 };
 
 interface SuccessResponse {
@@ -51,5 +51,3 @@ interface FailedResponse {
 }
 
 export interface IApiRes extends SuccessResponse, FailedResponse {}
-
-export * from "./statesAndActions";

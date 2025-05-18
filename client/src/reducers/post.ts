@@ -1,4 +1,13 @@
-import { IPostAction, IPostState } from "../types";
+import { IPost } from "../types";
+
+export interface IPostState {
+	posts: IPost[] | null;
+}
+
+export interface IPostAction {
+	type: "create_post" | "get_posts" | "update_post" | "delete_post";
+	payload: IPostState;
+}
 
 export const postInitialState: IPostState = {
 	posts: null,
@@ -6,14 +15,14 @@ export const postInitialState: IPostState = {
 
 export const postReducer = (state: IPostState, action: IPostAction) => {
 	switch (action.type) {
-		case "GET_POSTS":
-			return { ...state, posts: action.payload };
-		case "CREATE_POST":
-			return { ...state, posts: action.payload };
-		case "UPDATE_POST":
-			return { ...state, posts: action.payload };
-		case "DELETE_POST":
-			return { ...state, posts: action.payload };
+		case "create_post":
+			return { ...state, ...action.payload };
+		case "get_posts":
+			return { ...state, ...action.payload };
+		case "update_post":
+			return { ...state, ...action.payload };
+		case "delete_post":
+			return { ...state, ...action.payload };
 		default:
 			return state;
 	}

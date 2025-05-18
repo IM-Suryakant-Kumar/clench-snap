@@ -1,18 +1,15 @@
-import { useNavigate, useSearchParams } from "react-router";
+import { useLocation } from "react-router";
 import { Link } from "react-router";
-import { signup } from "../apis/auth";
-import { useLoading, useUser } from "../contexts";
-import { useState } from "react";
+import { useAuth, useLoading } from "../contexts";
 import { IUser } from "../types";
 import { loadingWrapper } from "../utils";
 
 const Signup = () => {
-	const navigate = useNavigate();
-	const [searchParams] = useSearchParams();
-	const [errorMessage, setErrorMessage] = useState<string>("");
-	const pathname = searchParams.get("redirectTo") || "/";
-
-	const { getProfile } = useUser();
+	const pathname = useLocation().state.redirectTo;
+	const {
+		authState: { errorMessage },
+		signup,
+	} = useAuth();
 	const {
 		loadingState: { submitting },
 		submittingStart,
@@ -23,20 +20,11 @@ const Signup = () => {
 		e.preventDefault();
 		const fn = async () => {
 			const formData = new FormData(e.currentTarget);
-			const fullname = formData.get("fullname");
+			const name = formData.get("name");
 			const username = formData.get("username");
 			const email = formData.get("email");
 			const password = formData.get("password");
-
-			const data = await signup({
-				fullname,
-				username,
-				email,
-				password,
-			} as IUser);
-			data.success
-				? (await getProfile(), navigate(pathname, { replace: true }))
-				: setErrorMessage(data.message);
+			signup({ name, username, email, password } as IUser);
 		};
 
 		loadingWrapper(submittingStart, submittingStop, fn);
@@ -46,7 +34,8 @@ const Signup = () => {
 		<div className="min-h-screen flex justify-center items-center">
 			<form
 				className="w-[90%] max-w-[24rem] bg-secondary-cl flex flex-col gap-[1em] py-[2em] px-[1em] rounded-md"
-				onSubmit={handleSubmit}>
+				onSubmit={handleSubmit}
+			>
 				<h1 className="text-2xl font-semibold font-cinzel text-center text-logo-cl mb-[1em]">
 					Sign Up
 				</h1>
@@ -82,7 +71,8 @@ const Signup = () => {
 				/>
 				<button
 					className="w-full h-[2rem] bg-logo-cl text-sm text-primary-cl rounded-md mt-[2em]"
-					disabled={submitting}>
+					disabled={submitting}
+				>
 					{submitting ? "Signing up..." : "Sign up"}
 				</button>
 				<span className="text-sm text-gray-400 text-center mt-[1em]">

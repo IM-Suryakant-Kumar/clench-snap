@@ -1,12 +1,6 @@
-export { default as Layout } from "./Layout";
-export {
-	default as HostLayout,
-	loader as hostLayoutLoader,
-} from "./HostLayout";
-export {
-	default as AuthLayout,
-	loader as authLayoutLoader,
-} from "./AuthLayout";
+export { default as Layout } from "./layouts/Layout";
+export { default as HostLayout } from "./layouts/HostLayout";
+export { default as AuthLayout } from "./layouts/AuthLayout";
 export { default as Navbar } from "./Navbar";
 export { default as SearchModal } from "./SearchModal";
 export { default as ProfilePic } from "./ProfilePic";

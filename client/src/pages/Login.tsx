@@ -1,25 +1,23 @@
-import { useNavigate, useSearchParams, Link } from "react-router";
-import { useState } from "react";
-import { guestLogin, login } from "../apis/auth";
-import { useLoading, useUser } from "../contexts";
+import { Link, useLocation } from "react-router";
+import { useAuth, useLoading } from "../contexts";
 import { IUser } from "../types";
 import { loadingWrapper } from "../utils";
 
 const Login = () => {
-	const navigate = useNavigate();
-	const [searchParams] = useSearchParams();
-	const { getProfile } = useUser();
+	const state = useLocation().state;
+	const pathname = state?.redirectTo;
+	const message = state?.message;
 	const {
-		loadingState: { submitting, loading },
+		authState: { errorMessage },
+		login,
+	} = useAuth();
+	const {
+		loadingState: { loading, submitting },
 		submittingStart,
 		submittingStop,
 		loadingStart,
 		loadingStop,
 	} = useLoading();
-
-	const message = searchParams.get("message");
-	const [errorMessage, setErrorMessage] = useState<string>("");
-	const pathname = searchParams.get("redirectTo") || "/";
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -27,11 +25,7 @@ const Login = () => {
 			const formData = new FormData(e.currentTarget);
 			const email = formData.get("email");
 			const password = formData.get("password");
-
-			const data = await login({ email, password } as IUser);
-			data.success
-				? (await getProfile(), navigate(pathname, { replace: true }))
-				: setErrorMessage(data.message);
+			login({ email, password } as IUser);
 		};
 
 		loadingWrapper(submittingStart, submittingStop, fn);
@@ -39,9 +33,8 @@ const Login = () => {
 
 	const handleGuestLogin = async () => {
 		const fn = async () => {
-			const data = await guestLogin();
-			await getProfile();
-			data.success && navigate(pathname, { replace: true });
+			const cred = { email: "clenchsnap@gmail.com", password: "secret" };
+			login(cred as IUser);
 		};
 
 		loadingWrapper(loadingStart, loadingStop, fn);
@@ -51,7 +44,8 @@ const Login = () => {
 		<div className="min-h-screen flex justify-center items-center">
 			<form
 				className="w-[90%] max-w-[24rem] bg-secondary-cl flex flex-col gap-[1em] py-[2em] px-[1em] rounded-md"
-				onSubmit={handleSubmit}>
+				onSubmit={handleSubmit}
+			>
 				<h1 className="text-2xl font-semibold font-cinzel text-center text-logo-cl mb-[1em]">
 					Log In
 				</h1>
@@ -78,14 +72,16 @@ const Login = () => {
 				/>
 				<button
 					className="w-full h-[2rem] bg-logo-cl text-sm text-primary-cl rounded-md mt-[2em]"
-					disabled={submitting}>
+					disabled={submitting}
+				>
 					{submitting ? "Logging in..." : "Log in"}
 				</button>
 				<button
 					type="button"
 					className="w-full h-[2rem] bg-blue-400 text-sm text-primary-cl rounded-md -mt-[0.5em]"
 					onClick={handleGuestLogin}
-					disabled={loading}>
+					disabled={loading}
+				>
 					{loading ? "Guest Loging in..." : "Guest Login"}
 				</button>
 				<span className="text-sm text-gray-400 text-center mt-[1em]">

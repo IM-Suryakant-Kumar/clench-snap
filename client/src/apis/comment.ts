@@ -1,38 +1,35 @@
-import { toast } from "react-toastify";
 import axios from "./axios";
 import { asyncWrapper, getTokenFromLocalStorage } from "../utils";
-import { IApiRes, IPost } from "../types";
+import { IApiRes, IComment } from "../types";
 
-export const createPost = (post: IPost) =>
+export const createComment = (comment: IComment) =>
 	asyncWrapper(async () => {
-		const { data } = (await axios.post("/post", post, {
-			headers: { Authorization: `Bearer ${getTokenFromLocalStorage()}` },
-		})) as IApiRes;
-		toast.success(data.message);
-		return data;
-	});
-
-export const getPosts = () =>
-	asyncWrapper(async () => {
-		const { data } = (await axios.get("/post", {
+		const { data } = (await axios.post("/comment", comment, {
 			headers: { Authorization: `Bearer ${getTokenFromLocalStorage()}` },
 		})) as IApiRes;
 		return data;
 	});
 
-export const updatePost = (id: string, post: IPost) =>
+export const getComments = () =>
 	asyncWrapper(async () => {
-		const { data } = (await axios.patch(`/post/${id}`, post, {
+		const { data } = (await axios.get("/comment", {
 			headers: { Authorization: `Bearer ${getTokenFromLocalStorage()}` },
 		})) as IApiRes;
 		return data;
 	});
 
-export const deletePost = (id: string) =>
+export const updateComment = (id: string, comment: IComment) =>
 	asyncWrapper(async () => {
-		const { data } = (await axios.delete(`/post/${id}`, {
+		const { data } = (await axios.patch(`/comment/${id}`, comment, {
 			headers: { Authorization: `Bearer ${getTokenFromLocalStorage()}` },
 		})) as IApiRes;
-		toast.success(data.message);
+		return data;
+	});
+
+export const deleteComment = (id: string) =>
+	asyncWrapper(async () => {
+		const { data } = (await axios.delete(`/comment/${id}`, {
+			headers: { Authorization: `Bearer ${getTokenFromLocalStorage()}` },
+		})) as IApiRes;
 		return data;
 	});

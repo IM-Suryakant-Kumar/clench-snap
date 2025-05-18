@@ -4,7 +4,7 @@ import { Link } from "react-router";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { FaHeart, FaRegComment, FaRegHeart } from "react-icons/fa";
 import { MdBookmark, MdOutlineBookmarkBorder } from "react-icons/md";
-import { usePost, useUser } from "../contexts";
+import { useAuth, usePost, useUser } from "../contexts";
 import { ActionModal, ProfilePic } from ".";
 import { IPost } from "../types";
 
@@ -13,60 +13,61 @@ type Props = {
 };
 
 const Post: React.FC<Props> = ({ post }) => {
-	const { updatePost } = usePost();
 	const {
-		userState: { user },
+		authState: { user },
+	} = useAuth();
+	const {
+		userState: { users },
 	} = useUser();
+	const { updatePost } = usePost();
+
+	const postUser = users?.find((u) => post.author === u._id);
 
 	const [showModalId, setShowModalId] = useState<string>("");
 
 	const handleLike = async () => {
-		const liked = post.liked.includes(user?._id as string)
-			? post.liked.filter(item => item !== user?._id)
-			: [...post.liked, user?._id];
-
-		await updatePost({
-			_id: post._id,
-			liked,
-		} as IPost);
+		const liked = post?.liked.includes(user?._id as string)
+			? post.liked.filter((uid) => uid !== user?._id)
+			: [...(post?.liked as string[]), user?._id];
+		await updatePost(post._id, { liked } as IPost);
 	};
 
 	const handleSave = async () => {
-		const saved = post.saved.includes(user?._id as string)
-			? post.saved.filter(item => item !== user?._id)
-			: [...post.saved, user?._id];
-
-		await updatePost({
-			_id: post._id,
-			saved,
-		} as IPost);
+		const saved = post?.saved.includes(user?._id as string)
+			? post.saved.filter((uid) => uid !== user?._id)
+			: [...(post?.saved as string[]), user?._id];
+		await updatePost(post._id, { saved } as IPost);
 	};
 
 	const handleActionModal = (postId: string) => {
-		setShowModalId(prevId => (prevId === postId ? "" : postId));
+		setShowModalId((prevId) => (prevId === postId ? "" : postId));
 	};
 
 	return (
 		<div className="w-[95%] mx-auto bg-secondary-cl mb-[1em] rounded-lg relative">
 			<div className="flex items-center p-[0.5em]">
-				<Link to={`/profile/${post.userId}/post`} className="flex items-center">
+				<Link
+					to={`/profile/${postUser?.username}/post`}
+					className="flex items-center"
+				>
 					<ProfilePic
 						width="2rem"
 						height="2rem"
 						size="1rem"
-						name={post.userName}
-						avatar={post.avatar}
+						name={postUser?.name as string}
+						avatar={postUser?.avatar as string}
 					/>
-					<h1 className="ml-[1em] font-medium text-md">{post.userName}</h1>
+					<h1 className="ml-[1em] font-medium text-md">{postUser?.name}</h1>
 				</Link>
 				<div
 					className="ml-auto cursor-pointer text-md"
-					onClick={() => handleActionModal(post._id)}>
+					onClick={() => handleActionModal(post._id)}
+				>
 					<HiOutlineDotsVertical />
 				</div>
 				{/* action modals */}
 				{showModalId === post._id && (
-					<ActionModal postToEdit={post} postUserId={post.userId} />
+					<ActionModal postToEdit={post} postUserId={post.author} />
 				)}
 			</div>
 			<p className="p-[0.5em]">
@@ -100,7 +101,7 @@ const Post: React.FC<Props> = ({ post }) => {
 					{post.comments.length}
 				</p>
 				<div className="cursor-pointer ml-auto" onClick={handleSave}>
-					{post.saved.includes(user?._id as string) ? (
+					{post?.saved?.includes(user?._id as string) ? (
 						<MdBookmark />
 					) : (
 						<MdOutlineBookmarkBorder />

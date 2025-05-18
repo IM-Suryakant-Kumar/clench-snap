@@ -1,8 +1,8 @@
-import { createContext, useReducer, useContext, FC } from "react";
-import { loadingInitialState, loadingReducer } from "../reducers";
+import { createContext, useReducer, useContext, FC, useMemo } from "react";
+import { initialLoadingState, loadingReducer } from "../reducers";
 
 const intialLoadingContext = {
-	loadingState: loadingInitialState,
+	loadingState: initialLoadingState,
 	loadingStart: () => {},
 	loadingStop: () => {},
 	submittingStart: () => {},
@@ -19,39 +19,40 @@ type Props = {
 export const LoadingContextProvider: FC<Props> = ({ children }) => {
 	const [loadingState, loadingDispatch] = useReducer(
 		loadingReducer,
-		loadingInitialState
+		initialLoadingState
 	);
+	const memoizedState = useMemo(() => loadingState, [loadingState]);
 
 	const loadingStart = () => {
 		loadingDispatch({
-			type: "LOADING",
+			type: "loading",
 			value: true,
 		});
 	};
 
 	const loadingStop = () => {
 		loadingDispatch({
-			type: "LOADING",
+			type: "loading",
 			value: false,
 		});
 	};
 
 	const submittingStart = () => {
 		loadingDispatch({
-			type: "SUBMITTING",
+			type: "submitting",
 			value: true,
 		});
 	};
 
 	const submittingStop = () => {
 		loadingDispatch({
-			type: "SUBMITTING",
+			type: "submitting",
 			value: false,
 		});
 	};
 
 	const providerItem = {
-		loadingState,
+		loadingState: memoizedState,
 		loadingStart,
 		loadingStop,
 		submittingStart,

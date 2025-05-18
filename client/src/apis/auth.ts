@@ -8,31 +8,23 @@ import {
 	removeTokenFromLocalStorage,
 } from "../utils";
 
-// login
-export const login = (logCred: IUser) =>
+export const signup = async (cred: IUser) =>
 	asyncWrapper(async () => {
-		const { data } = (await axios.post("/auth/login", logCred)) as IApiRes;
+		const { data } = (await axios.post("/auth/signup", cred)) as IApiRes;
 		AddTokenToLocalStorage(data.token);
 		toast.success(data.message);
 		return data;
 	});
-// guest login
-export const guestLogin = async () =>
+
+export const login = async (cred: IUser) =>
 	asyncWrapper(async () => {
-		const { data } = (await axios.get("/auth/guest-login")) as IApiRes;
+		const { data } = (await axios.post("/auth/login", cred)) as IApiRes;
 		AddTokenToLocalStorage(data.token);
 		toast.success(data.message);
 		return data;
 	});
-// signup
-export const signup = async (regCred: IUser) =>
-	asyncWrapper(async () => {
-		const { data } = (await axios.post("/auth/register", regCred)) as IApiRes;
-		AddTokenToLocalStorage(data.token);
-		toast.success(data.message);
-		return data;
-	});
-// logout
+
+
 export const logout = async () =>
 	asyncWrapper(async () => {
 		const { data } = (await axios.get("/auth/logout", {
@@ -40,5 +32,21 @@ export const logout = async () =>
 		})) as IApiRes;
 		removeTokenFromLocalStorage();
 		toast.success(data.message);
+		return data;
+	});
+
+export const getProfile = async () =>
+	asyncWrapper(async () => {
+		const { data } = (await axios.get("/auth/me", {
+			headers: { Authorization: `Bearer ${getTokenFromLocalStorage()}` },
+		})) as IApiRes;
+		return data;
+	});
+
+export const updateProfile = async (user: IUser) =>
+	asyncWrapper(async () => {
+		const { data } = (await axios.patch("/auth/me", user, {
+			headers: { Authorization: `Bearer ${getTokenFromLocalStorage()}` },
+		})) as IApiRes;
 		return data;
 	});

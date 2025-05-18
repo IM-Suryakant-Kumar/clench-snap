@@ -7,7 +7,6 @@ import { Post, RightSidebar } from "../components";
 const Home = () => {
 	const { handleToggle, setPostToEdit, setContent } = usePostModal();
 	const [filterCat, setFilterCat] = useState<string>("recent");
-
 	const {
 		postState: { posts },
 	} = usePost();
@@ -27,21 +26,24 @@ const Home = () => {
 							className={`text-logo-cl cursor-pointer uppercase text-sm flex-1 py-[0.5em] border-b-[3px] ${
 								filterCat === "recent" ? "border-logo-cl" : "border-blue-300"
 							}`}
-							onClick={() => setFilterCat("recent")}>
+							onClick={() => setFilterCat("recent")}
+						>
 							recent
 						</span>
 						<span
 							className={`text-logo-cl cursor-pointer uppercase text-sm flex-1 py-[0.5em] border-b-[3px] ${
 								filterCat === "older" ? "border-logo-cl" : "border-blue-300"
 							}`}
-							onClick={() => setFilterCat("older")}>
+							onClick={() => setFilterCat("older")}
+						>
 							older
 						</span>
 						<span
 							className={`text-logo-cl cursor-pointer uppercase text-sm flex-1 py-[0.5em] border-b-[3px] ${
 								filterCat === "trending" ? "border-logo-cl" : "border-blue-300"
 							}`}
-							onClick={() => setFilterCat("trending")}>
+							onClick={() => setFilterCat("trending")}
+						>
 							trending
 						</span>
 					</div>
@@ -56,7 +58,8 @@ const Home = () => {
 			</div>
 			<div
 				className="w-[3rem] h-[3rem] fixed bottom-[2.5em] sm:bottom-[0.5em] right-[1.5em] z-40  text-[1.5rem] p-[0.5em] text-primary-cl bg-logo-cl rounded-full cursor-pointer"
-				onClick={handlePencilClick}>
+				onClick={handlePencilClick}
+			>
 				<IoPencil />
 			</div>
 		</div>

@@ -1,5 +1,5 @@
 import { Link, Outlet, useParams } from "react-router";
-import { useLoading, usePost, useUser } from "../contexts";
+import { useAuth, useLoading, usePost, useUser } from "../contexts";
 import { NavLink } from "react-router";
 import { ProfilePic } from "../components";
 import { IUser } from "../types";
@@ -9,35 +9,34 @@ const Profile = () => {
 	const { username } = useParams() as { username: string };
 
 	const {
+		authState: { user },
+		updateProfile,
+	} = useAuth();
+
+	const {
 		loadingState: { loading },
 		loadingStart,
 		loadingStop,
 	} = useLoading();
 
 	const {
-		userState: { user, users },
-		getAllUser,
-		updateProfile,
+		userState: { users },
 	} = useUser();
 
 	const {
 		postState: { posts },
 	} = usePost();
 
-	!users &&
-		(async () => {
-			await getAllUser();
-		})();
-
 	const newUser = users?.find(
-		item => item.username === username || item._id === username
+		(item) => item.username === username || item._id === username
 	);
-
-	const newUserPosts = posts?.filter(p => p.userId === newUser?._id);
-	const newUserLikedPosts = posts?.filter(p =>
+	const newUserPosts = newUser?.posts?.map((p) =>
+		posts?.find((sp) => sp._id === p)
+	);
+	const newUserLikedPosts = posts?.filter((p) =>
 		p.liked.includes(newUser?._id as string)
 	);
-	const newUserSavedPosts = posts?.filter(p =>
+	const newUserSavedPosts = posts?.filter((p) =>
 		p.saved.includes(newUser?._id as string)
 	);
 
@@ -46,31 +45,25 @@ const Profile = () => {
 		const fn = async () => {
 			// followers
 			const followers = item.followers.includes(user?._id as string)
-				? item.followers.filter(userId => userId !== user?._id)
+				? item.followers.filter((userId) => userId !== user?._id)
 				: [...item.followers, user?._id];
 
 			await updateProfile({
-				_id: item._id,
 				followers,
 			} as IUser);
 
 			// followings
 			const followings = user?.followings.includes(item._id)
-				? user.followings.filter(userId => item._id !== userId)
+				? user.followings.filter((userId) => item._id !== userId)
 				: [...(user?.followings as string[]), item._id];
 
 			await updateProfile({
-				_id: user?._id,
 				followings,
 			} as IUser);
 		};
 
 		loadingWrapper(loadingStart, loadingStop, fn);
 	};
-
-	// console.log(newUserPosts);
-	// console.log(newUserLikedPost);
-	// console.log(newUserSavedPost);
 
 	return (
 		<div className="sm:max-w-[80%] m-auto">
@@ -89,21 +82,23 @@ const Profile = () => {
 						{user?.username === username ? (
 							<Link
 								to="/settings"
-								className="text-xs border-2 border-secondary-cl mr-[1em] sm:m-0 px-[1em] py-[0.2em] rounded-lg text-primary-cl bg-logo-cl self-end">
+								className="text-xs border-2 border-secondary-cl mr-[1em] sm:m-0 px-[1em] py-[0.2em] rounded-lg text-primary-cl bg-logo-cl self-end"
+							>
 								Edit Profile
 							</Link>
 						) : (
 							<button
 								className="text-xs border-2 border-secondary-cl mr-[1em] sm:m-0 px-[1em] py-[0.2em] rounded-lg text-primary-cl bg-logo-cl self-end"
 								onClick={async () => handleFollowing(newUser as IUser)}
-								disabled={loading}>
+								disabled={loading}
+							>
 								{user?.followings?.includes(newUser?._id as string)
 									? "Following"
 									: "follow"}
 							</button>
 						)}
 						<h1 className="text-lg sm:text-2xl font-semibold mt-[0.5em]">
-							{newUser?.fullname}
+							{newUser?.name}
 						</h1>
 						<h2 className="text-sm sm:text-lg font-normal -mt-[0.5em]">
 							@{newUser?.username}
@@ -113,7 +108,8 @@ const Profile = () => {
 						</p>
 						<a
 							href={newUser?.website}
-							className="text-blue-400 text-xs sm:text-sm">
+							className="text-blue-400 text-xs sm:text-sm"
+						>
 							{newUser?.website}
 						</a>
 						{/* activity section */}
