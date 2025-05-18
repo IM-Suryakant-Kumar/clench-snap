@@ -5,7 +5,7 @@ import { IUser } from "../types";
 import { loadingWrapper } from "../utils";
 
 const Signup = () => {
-	const pathname = useLocation().state.redirectTo;
+	const pathname = useLocation().state?.redirectTo;
 	const {
 		authState: { errorMessage },
 		signup,
@@ -48,8 +48,8 @@ const Signup = () => {
 				<input
 					className="outline-none border-b-2 border-logo-cl bg-inherit"
 					type="text"
-					name="fullname"
-					placeholder="Fullname"
+					name="name"
+					placeholder="name"
 				/>
 				<input
 					className="outline-none border-b-2 border-logo-cl bg-inherit"
