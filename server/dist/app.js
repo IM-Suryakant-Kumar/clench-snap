@@ -22,6 +22,7 @@ const db_1 = __importDefault(require("./db"));
 const routes_1 = require("./routes");
 const PORT = process.env.PORT;
 const MONGO_URI = process.env.MONGO_URI;
+const CLIENT_URL = process.env.CLIENT_URL;
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use((0, helmet_1.default)());
