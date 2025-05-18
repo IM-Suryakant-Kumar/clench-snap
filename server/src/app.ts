@@ -20,7 +20,7 @@ const app = express();
 app.use(express.json());
 app.use(helmet());
 app.use(morgan("dev"));
-app.use(cors({ credentials: true }));
+app.use(cors({ origin: CLIENT_URL, credentials: true }));
 
 app.use("/auth", authRouter);
 app.use("/user", authenticateUser, userRouter);

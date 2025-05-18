@@ -27,7 +27,7 @@ const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use((0, helmet_1.default)());
 app.use((0, morgan_1.default)("dev"));
-app.use((0, cors_1.default)({ credentials: true }));
+app.use((0, cors_1.default)({ origin: CLIENT_URL, credentials: true }));
 app.use("/auth", routes_1.authRouter);
 app.use("/user", middlewares_1.authenticateUser, routes_1.userRouter);
 app.use("/post", middlewares_1.authenticateUser, routes_1.postRouter);
