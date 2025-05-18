@@ -12,22 +12,35 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.User = void 0;
 const mongoose_1 = require("mongoose");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const UserSchema = new mongoose_1.Schema({
-    fullname: {
+const jsonwebtoken_1 = require("jsonwebtoken");
+const userSchema = new mongoose_1.Schema({
+    name: {
         type: String,
-        required: [true, "fullname is required"],
-        maxlength: 20,
-        minlength: 3,
+        required: [true, "name is required"],
+        minlength: [
+            3,
+            "Name should not be less than 3 greater than 20 characters",
+        ],
+        maxlength: [
+            20,
+            "Name should not be less than 3 greater than 20 characters",
+        ],
     },
     username: {
         type: String,
         required: [true, "username is required"],
+        minlength: [
+            3,
+            "Username should not be less than 3 greater than 20 characters",
+        ],
+        maxlength: [
+            20,
+            "Username should not be less than 3 greater than 20 characters",
+        ],
         unique: true,
-        maxlength: 20,
-        minlength: 3,
     },
     email: {
         type: String,
@@ -37,15 +50,17 @@ const UserSchema = new mongoose_1.Schema({
     password: {
         type: String,
         required: [true, "password is required"],
+        minlength: [3, "Password should not be less than 3 characters"],
         select: false,
     },
     avatar: { type: String },
     bio: { type: String },
     website: { type: String },
-    followers: [{ type: String, required: true }],
-    followings: [{ type: String, required: true }]
+    followers: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "User" }],
+    followings: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "User" }],
+    posts: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "Post" }],
 }, { timestamps: true });
-UserSchema.pre("save", function () {
+userSchema.pre("save", function () {
     return __awaiter(this, void 0, void 0, function* () {
         if (!this.isModified("password"))
             return;
@@ -53,15 +68,14 @@ UserSchema.pre("save", function () {
         this.password = yield bcryptjs_1.default.hash(this.password, salt);
     });
 });
-UserSchema.methods.comparePassword = function (candidatePassword) {
+userSchema.methods.comparePassword = function (candidatePassword) {
     return __awaiter(this, void 0, void 0, function* () {
         return yield bcryptjs_1.default.compare(candidatePassword, this.password);
     });
 };
-UserSchema.methods.createJWTToken = function () {
-    const JWT_SECRET = process.env.JWT_SECRET;
-    const JWT_LIFETIME = process.env.JWT_LIFETIME;
-    return jsonwebtoken_1.default.sign({ _id: this._id }, JWT_SECRET, { expiresIn: JWT_LIFETIME });
+userSchema.methods.createJWTToken = function () {
+    return (0, jsonwebtoken_1.sign)({ _id: this._id }, process.env.JWT_SECRET, {
+        expiresIn: "5d",
+    });
 };
-exports.default = (0, mongoose_1.model)("User", UserSchema);
-//# sourceMappingURL=User.js.map
+exports.User = (0, mongoose_1.model)("User", userSchema);

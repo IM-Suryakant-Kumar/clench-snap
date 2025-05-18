@@ -12,28 +12,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.logout = exports.guestLogin = exports.login = exports.createUser = void 0;
-const errors_1 = require("../errors");
+exports.updateProfile = exports.getProfile = exports.logout = exports.login = exports.signup = void 0;
+const middlewares_1 = require("../middlewares");
 const models_1 = require("../models");
 const utils_1 = __importDefault(require("../utils"));
-// Create User
-const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { body: { fullname, username, email, password }, } = req;
-    if (!(fullname && username && email && password))
-        throw new errors_1.BadRequestError("Please provide all values");
-    const emailAlreadyExists = yield models_1.User.findOne({ email });
-    if (emailAlreadyExists) {
-        throw new errors_1.BadRequestError("Email is already exists");
-    }
-    const user = yield models_1.User.create({ fullname, username, email, password });
-    (0, utils_1.default)(user, 200, res, "Successfully registered");
-});
-exports.createUser = createUser;
-// Login user
-const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { body: { email, password }, } = req;
+const errors_1 = require("../errors");
+exports.signup = (0, middlewares_1.asyncWrapper)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield models_1.User.create(req.body);
+    (0, utils_1.default)(user, 201, res, "Successfully signed up.");
+}));
+exports.login = (0, middlewares_1.asyncWrapper)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { email, password } = req.body;
     if (!(email && password))
-        throw new errors_1.BadRequestError("Please provide all values");
+        throw new errors_1.BadRequestError("Email and password is required.");
     const user = yield models_1.User.findOne({ email }).select("+password");
     if (!user)
         throw new errors_1.UnauthenticatedError("Invalid Credentials!");
@@ -41,25 +32,15 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!isPasswordCorrect)
         throw new errors_1.UnauthorizedError("Invalid credentials!");
     (0, utils_1.default)(user, 200, res, "Successfully logged in");
-});
-exports.login = login;
-// guest login
-const guestLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield models_1.User.findOne({ email: "clenchsnap@gmail.com" }).select("+password");
-    if (!user)
-        throw new errors_1.UnauthenticatedError("Invalid Credentials!");
-    const isPasswordCorrect = yield user.comparePassword("secret");
-    if (!isPasswordCorrect)
-        throw new errors_1.UnauthorizedError("Invalid credentials!");
-    (0, utils_1.default)(user, 200, res, "Successfully logged in");
-});
-exports.guestLogin = guestLogin;
-// Logout user
-const logout = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    res
-        .cookie("token", null, { maxAge: 0, httpOnly: true })
-        .status(200)
-        .json({ success: true, message: "Logged out successfully!" });
-});
-exports.logout = logout;
-//# sourceMappingURL=auth.js.map
+}));
+exports.logout = (0, middlewares_1.asyncWrapper)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.status(200).json({ success: true, message: "Successfully logged out." });
+}));
+exports.getProfile = (0, middlewares_1.asyncWrapper)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.status(200).json({ success: true, user: req.user });
+}));
+exports.updateProfile = (0, middlewares_1.asyncWrapper)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { user, body } = req;
+    yield models_1.User.findByIdAndUpdate(user._id, body);
+    res.status(200).json({ success: true, message: "Successfully Updated!" });
+}));

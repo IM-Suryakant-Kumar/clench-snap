@@ -1,21 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Post = void 0;
 const mongoose_1 = require("mongoose");
-const PostSchema = new mongoose_1.Schema({
-    userId: { type: String, required: true },
-    userName: { type: String, required: true },
-    avatar: { type: String, required: true },
-    content: { type: String, required: true },
+const postSchema = new mongoose_1.Schema({
+    author: { type: mongoose_1.Schema.Types.ObjectId, ref: "User" },
+    content: { type: String, required: [true, "content is required"] },
     image: { type: String, default: "" },
-    liked: [{ type: String, required: true }],
-    saved: [{ type: String, required: true }],
-    comments: [
-        {
-            userName: { type: String, required: true },
-            avatar: { type: String, required: true },
-            content: { type: String, required: true },
-        },
-    ],
+    liked: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "User" }],
+    saved: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "User" }],
+    comments: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "Comment" }],
 }, { timestamps: true });
-exports.default = (0, mongoose_1.model)("Post", PostSchema);
-//# sourceMappingURL=Post.js.map
+exports.Post = (0, mongoose_1.model)("Post", postSchema);

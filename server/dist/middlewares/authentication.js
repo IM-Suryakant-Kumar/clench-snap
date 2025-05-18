@@ -8,10 +8,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const mongoose_1 = __importDefault(require("mongoose"));
-const connectDB = (url) => __awaiter(void 0, void 0, void 0, function* () { return yield mongoose_1.default.connect(url); });
-exports.default = connectDB;
+exports.authenticateUser = void 0;
+const jsonwebtoken_1 = require("jsonwebtoken");
+const async_wrapper_1 = require("./async-wrapper");
+const models_1 = require("../models");
+const errors_1 = require("../errors");
+exports.authenticateUser = (0, async_wrapper_1.asyncWrapper)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const token = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(" ")[1];
+    const { _id } = (0, jsonwebtoken_1.verify)(token, process.env.JWT_SECRET);
+    const user = yield models_1.User.findById(_id);
+    if (!user)
+        throw new errors_1.UnauthenticatedError("Authentication failed!");
+    req.user = user;
+    next();
+}));

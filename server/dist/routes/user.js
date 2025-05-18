@@ -1,13 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.userRouter = void 0;
 const express_1 = require("express");
-const user_1 = require("../controllers/user");
-const middleware_1 = require("../middleware");
+const controllers_1 = require("../controllers");
 const router = (0, express_1.Router)();
-router
-    .route("/me")
-    .get(middleware_1.authenticateUser, user_1.getLoggedInUser)
-    .patch(middleware_1.authenticateUser, user_1.updateUser);
-router.route("/").get(user_1.getAllusers);
-exports.default = router;
-//# sourceMappingURL=user.js.map
+router.route("/").post(controllers_1.createUser).get(controllers_1.getUsers);
+router.route("/:id").get(controllers_1.getUser).patch(controllers_1.updateUser).delete(controllers_1.deleteUser);
+exports.userRouter = router;

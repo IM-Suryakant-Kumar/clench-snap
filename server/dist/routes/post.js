@@ -1,14 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.postRouter = void 0;
 const express_1 = require("express");
-const post_1 = require("../controllers/post");
-const middleware_1 = require("../middleware");
+const controllers_1 = require("../controllers");
 const router = (0, express_1.Router)();
-router
-    .route("/")
-    .get(post_1.getAllPosts)
-    .post(middleware_1.authenticateUser, post_1.createPost)
-    .patch(middleware_1.authenticateUser, post_1.editPost);
-router.route("/:postId").delete(middleware_1.authenticateUser, post_1.deletePost);
-exports.default = router;
-//# sourceMappingURL=post.js.map
+router.route("/").post(controllers_1.createPost).get(controllers_1.getPosts);
+router.route("/:id").get(controllers_1.getPost).patch(controllers_1.updatePost).delete(controllers_1.deletePost);
+exports.postRouter = router;

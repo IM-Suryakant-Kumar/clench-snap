@@ -9,48 +9,28 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deletePost = exports.editPost = exports.createPost = exports.getAllPosts = void 0;
+exports.deletePost = exports.updatePost = exports.getPost = exports.getPosts = exports.createPost = void 0;
+const middlewares_1 = require("../middlewares");
 const models_1 = require("../models");
-const getAllPosts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.createPost = (0, middlewares_1.asyncWrapper)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    yield models_1.Post.create(Object.assign({ author: req.user._id }, req.body));
+    res.status(201).json({ success: true, message: "Successfully posted" });
+}));
+const getPosts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const posts = yield models_1.Post.find();
     res.status(200).json({ success: true, posts });
 });
-exports.getAllPosts = getAllPosts;
-const createPost = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { user: { _id, fullname, avatar }, } = req;
-    yield models_1.Post.create(Object.assign({ userId: _id, userName: fullname, avatar }, req.body));
-    const posts = yield models_1.Post.find();
-    res.status(200).json({
-        success: true,
-        message: "Successfully posted",
-        posts,
-    });
+exports.getPosts = getPosts;
+const getPost = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const post = yield models_1.Post.findById(req.params.id);
+    res.status(200).json({ success: true, post });
 });
-exports.createPost = createPost;
-const editPost = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { user: { _id }, } = req;
-    yield models_1.Post.findByIdAndUpdate(req.body._id, req.body, {
-        new: true,
-    });
-    const posts = yield models_1.Post.find();
-    res.status(200).json({
-        success: true,
-        message: "Successfully updated",
-        posts,
-    });
-});
-exports.editPost = editPost;
-const deletePost = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { params: { postId }, } = req;
-    yield models_1.Post.findByIdAndDelete(postId, {
-        new: true,
-    });
-    const posts = yield models_1.Post.find();
-    res.status(200).json({
-        success: true,
-        message: "Successfully deleted",
-        posts,
-    });
-});
-exports.deletePost = deletePost;
-//# sourceMappingURL=post.js.map
+exports.getPost = getPost;
+exports.updatePost = (0, middlewares_1.asyncWrapper)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    yield models_1.Post.findByIdAndUpdate(req.params.id, req.body);
+    res.status(200).json({ success: true, message: "Successfully updated post" });
+}));
+exports.deletePost = (0, middlewares_1.asyncWrapper)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    yield models_1.Post.findByIdAndDelete(req.params.id);
+    res.status(200).json({ success: true, message: "Successfully deleted post" });
+}));

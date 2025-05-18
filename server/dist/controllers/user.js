@@ -9,33 +9,28 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllusers = exports.updateUser = exports.getLoggedInUser = void 0;
+exports.deleteUser = exports.updateUser = exports.getUser = exports.getUsers = exports.createUser = void 0;
+const middlewares_1 = require("../middlewares");
 const models_1 = require("../models");
-// get logged-in user
-const getLoggedInUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { user: { _id }, } = req;
-    const user = yield models_1.User.findById(_id);
-    res.status(200).json({ success: true, user });
-});
-exports.getLoggedInUser = getLoggedInUser;
-const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { user: { _id }, body, } = req;
-    yield models_1.User.findByIdAndUpdate(req.body._id, body, {
-        new: true,
-    });
-    const user = yield models_1.User.findById(_id);
-    const users = yield models_1.User.find();
-    res.status(200).json({
-        success: true,
-        message: "Successfully Updated!",
-        user,
-        users,
-    });
-});
-exports.updateUser = updateUser;
-const getAllusers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.createUser = (0, middlewares_1.asyncWrapper)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    yield models_1.User.create(req.body);
+    res.status(201).json({ success: true, message: "Successfully Usered" });
+}));
+const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const users = yield models_1.User.find();
     res.status(200).json({ success: true, users });
 });
-exports.getAllusers = getAllusers;
-//# sourceMappingURL=user.js.map
+exports.getUsers = getUsers;
+const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield models_1.User.findById(req.params.id);
+    res.status(200).json({ success: true, user });
+});
+exports.getUser = getUser;
+exports.updateUser = (0, middlewares_1.asyncWrapper)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    yield models_1.User.findByIdAndUpdate(req.params.id, req.body);
+    res.status(200).json({ success: true, message: "Successfully updated User" });
+}));
+exports.deleteUser = (0, middlewares_1.asyncWrapper)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    yield models_1.User.findByIdAndDelete(req.params.id);
+    res.status(200).json({ success: true, message: "Successfully deleted User" });
+}));
