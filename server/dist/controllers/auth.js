@@ -18,24 +18,24 @@ const utils_1 = __importDefault(require("../utils"));
 const errors_1 = require("../errors");
 const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield models_1.User.create(req.body);
-    (0, utils_1.default)(user, 201, res, "Signed up successfully!");
+    (0, utils_1.default)(user, 201, res, "Signed up successfully.");
 });
 exports.signup = signup;
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
     if (!(email && password))
-        throw new errors_1.BadRequestError("Email and password is required.");
+        throw new errors_1.BadRequestError("Please provide email and password.");
     const user = yield models_1.User.findOne({ email }).select("+password");
     if (!user)
         throw new errors_1.UnauthenticatedError("Invalid Credentials!");
     const isPasswordCorrect = yield user.comparePassword(password);
     if (!isPasswordCorrect)
         throw new errors_1.UnauthorizedError("Invalid credentials!");
-    (0, utils_1.default)(user, 200, res, "Logged in successfully!");
+    (0, utils_1.default)(user, 200, res, "Logged in successfully.");
 });
 exports.login = login;
 const logout = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    res.status(200).json({ success: true, message: "Logged out successfully!" });
+    res.status(200).json({ success: true, message: "Logged out successfully." });
 });
 exports.logout = logout;
 const getProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -45,6 +45,6 @@ exports.getProfile = getProfile;
 const updateProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { user, body } = req;
     yield models_1.User.findByIdAndUpdate(user === null || user === void 0 ? void 0 : user._id, body);
-    res.status(200).json({ success: true, message: "Updated successfully!" });
+    res.status(200).json({ success: true, message: "Updated successfully." });
 });
 exports.updateProfile = updateProfile;

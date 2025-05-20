@@ -5,13 +5,13 @@ export interface IUser {
 	name: string;
 	username: string;
 	email: string;
-	avatar: string;
-	bio: string;
-	website: string;
 	password: string;
-	followers: IUser[];
-	followings: IUser[];
-	posts: IPost[];
+	avatar?: string;
+	bio?: string;
+	website?: string;
+	followers?: IUser[];
+	followings?: IUser[];
+	posts?: IPost[];
 
 	comparePassword(candidatePassword: string): Promise<boolean>;
 	createJWTToken(): string;
@@ -20,10 +20,10 @@ export interface IUser {
 export interface IPost {
 	author: IUser;
 	content: string;
-	image: string;
-	liked: IPost[];
-	saved: IPost[];
-	comments: IComment[];
+	image?: string;
+	liked?: IPost[];
+	saved?: IPost[];
+	comments?: IComment[];
 }
 
 export interface IComment {

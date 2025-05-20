@@ -10,23 +10,23 @@ const userSchema = new Schema<IUser>(
 			required: [true, "Please provide name"],
 			minlength: [
 				3,
-				"Name should not be less than 3 greater than 20 characters",
+				"Name should not be less than 3 greater than 20 characters.",
 			],
 			maxlength: [
 				20,
-				"Name should not be less than 3 greater than 20 characters",
+				"Name should not be less than 3 greater than 20 characters.",
 			],
 		},
 		username: {
 			type: String,
-			required: [true, "Please provide username"],
+			required: [true, "Please provide username."],
 			minlength: [
 				3,
-				"Username should not be less than 3 greater than 20 characters",
+				"Username should not be less than 3 greater than 20 characters.",
 			],
 			maxlength: [
 				20,
-				"Username should not be less than 3 greater than 20 characters",
+				"Username should not be less than 3 greater than 20 characters.",
 			],
 			unique: true,
 		},
@@ -38,7 +38,7 @@ const userSchema = new Schema<IUser>(
 		password: {
 			type: String,
 			required: [true, "Please provide password"],
-			minlength: [3, "Password should not be less than 3 characters"],
+			minlength: [3, "Password should not be less than 3 characters."],
 			select: false,
 		},
 		avatar: { type: String },
