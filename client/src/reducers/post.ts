@@ -1,7 +1,9 @@
 import { IPost } from "../types";
 
 export interface IPostState {
-	posts: IPost[] | null;
+	success?: boolean;
+	message?: string | null;
+	posts?: IPost[] | null;
 }
 
 export interface IPostAction {
@@ -10,6 +12,8 @@ export interface IPostAction {
 }
 
 export const postInitialState: IPostState = {
+	success: false,
+	message: null,
 	posts: null,
 };
 

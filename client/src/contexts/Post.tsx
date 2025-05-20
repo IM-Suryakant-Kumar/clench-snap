@@ -18,10 +18,10 @@ import {
 
 interface IPostContext {
 	postState: typeof postInitialState;
-	getPosts: () => Promise<void>;
-	createPost: (post: IPost) => Promise<void>;
-	updatePost: (id: string, post: IPost) => Promise<void>;
-	deletePost: (id: string) => Promise<void>;
+	getPosts(): Promise<void>;
+	createPost(post: IPost): Promise<void>;
+	updatePost(id: string, post: IPost): Promise<void>;
+	deletePost(id: string): Promise<void>;
 }
 
 const PostContext = createContext<IPostContext | null>(null);
@@ -36,57 +36,33 @@ export const PostContextProvider: FC<Props> = ({ children }) => {
 	const memoizedState = useMemo(() => postState, [postState]);
 
 	const createPost = useCallback(async (post: IPost) => {
-		const { success } = await createPostApi(post);
-		if (success) {
-			const { posts } = await getPostsApi();
-			dispatch({
-				type: "create_post",
-				payload: { posts },
-			});
-		}
+		const { success, message } = await createPostApi(post);
+		dispatch({ type: "create_post", payload: { success, message } });
 	}, []);
 
 	const getPosts = useCallback(async () => {
 		const { success, posts } = await getPostsApi();
-		success &&
-			dispatch({
-				type: "get_posts",
-				payload: { posts },
-			});
+		dispatch({ type: "get_posts", payload: { success, posts } });
 	}, []);
 
 	const updatePost = useCallback(async (id: string, post: IPost) => {
-		const { success } = await updatePostApi(id, post);
-		if (success) {
-			const { posts } = await getPostsApi();
-			dispatch({
-				type: "create_post",
-				payload: { posts },
-			});
-		}
+		const { success, message } = await updatePostApi(id, post);
+		dispatch({ type: "create_post", payload: { success, message } });
 	}, []);
 
 	const deletePost = useCallback(async (id: string) => {
-		const { success } = await deletePostApi(id);
-		if (success) {
-			const { posts } = await getPostsApi();
-			dispatch({
-				type: "create_post",
-				payload: { posts },
-			});
-		}
+		const { success, message } = await deletePostApi(id);
+		dispatch({ type: "create_post", payload: { success, message } });
 	}, []);
 
 	useEffect(() => {
 		let ignore = false;
-		if (!ignore) {
-			getPosts();
-		}
+		!ignore && getPosts();
 
 		return () => {
 			ignore = true;
 		};
-	}, [getPosts]);
+	}, [getPosts, postState.message]);
 
 	const providerItem = {
 		postState: memoizedState,

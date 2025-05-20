@@ -1,18 +1,20 @@
 import { IUser } from "../types";
 
 interface IAuthState {
-	user: IUser | null;
-	errorMessage: string;
+	success?: boolean;
+	message?: string | null;
+	user?: IUser | null;
 }
 
 type IAuthAction = {
-	type: "signup" | "login" | "logout" | "get_profile" | "update_profile" | "error";
+	type: "signup" | "login" | "logout" | "get_profile" | "update_profile";
 	payload: IAuthState;
 };
 
 export const initialAuthState: IAuthState = {
 	user: null,
-	errorMessage: "",
+	message: null,
+	success: false,
 };
 
 export const authReducer = (state: IAuthState, action: IAuthAction) => {
@@ -24,7 +26,7 @@ export const authReducer = (state: IAuthState, action: IAuthAction) => {
 			return { ...state, ...action.payload };
 		}
 		case "logout": {
-			return { user: null, errorMessage: "" };
+			return { ...state, ...action.payload, user: null };
 		}
 		case "get_profile": {
 			return { ...state, ...action.payload };

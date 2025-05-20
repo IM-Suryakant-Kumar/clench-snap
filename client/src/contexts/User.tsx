@@ -13,7 +13,7 @@ import { useAuth } from "./Auth";
 
 interface IUserContext {
 	userState: typeof userInitialState;
-	getUsers: () => Promise<void>;
+	getUsers(): Promise<void>;
 }
 
 const UserContext = createContext<IUserContext | null>(null);
@@ -33,7 +33,7 @@ export const UserContextProvider: React.FC<Props> = ({ children }) => {
 		success &&
 			dispatch({
 				type: "get_users",
-				payload: { users },
+				payload: { success, users },
 			});
 	}, []);
 
@@ -46,7 +46,7 @@ export const UserContextProvider: React.FC<Props> = ({ children }) => {
 		return () => {
 			ignore = true;
 		};
-	}, [getUsers, authState]);
+	}, [getUsers, authState.message, userState.message]);
 
 	const providerItem = {
 		userState: memoizedState,

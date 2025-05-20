@@ -20,11 +20,11 @@ import { IUser } from "../types";
 
 interface initialAuthContext {
 	authState: typeof initialAuthState;
-	signup: (user: IUser) => Promise<void>;
-	login: (user: IUser) => Promise<void>;
-	logout: () => Promise<void>;
-	getProfile: () => Promise<void>;
-	updateProfile: (user: IUser) => Promise<void>;
+	signup(user: IUser): Promise<void>;
+	login(user: IUser): Promise<void>;
+	logout(): Promise<void>;
+	getProfile(): Promise<void>;
+	updateProfile(user: IUser): Promise<void>;
 }
 
 const AuthContext = createContext<initialAuthContext | null>(null);
@@ -40,92 +40,37 @@ export const AuthContextProvider: FC<Props> = ({ children }) => {
 
 	const signup = useCallback(async (cred: IUser) => {
 		const { success, message } = await signupApi(cred);
-		if (success) {
-			const { user } = await getProfileApi();
-			dispatch({
-				type: "signup",
-				payload: { user, errorMessage: "" },
-			});
-		} else {
-			dispatch({
-				type: "signup",
-				payload: { user: null, errorMessage: message },
-			});
-		}
+		dispatch({ type: "signup", payload: { success, message } });
 	}, []);
 
 	const login = useCallback(async (cred: IUser) => {
 		const { success, message } = await loginApi(cred);
-		if (success) {
-			const { user } = await getProfileApi();
-			dispatch({
-				type: "login",
-				payload: { user, errorMessage: "" },
-			});
-		} else {
-			dispatch({
-				type: "login",
-				payload: { user: null, errorMessage: message },
-			});
-		}
+		dispatch({ type: "login", payload: { success, message } });
 	}, []);
 
 	const logout = useCallback(async () => {
 		const { success, message } = await logoutApi();
-		if (success) {
-			dispatch({
-				type: "logout",
-				payload: { user: null, errorMessage: "" },
-			});
-		} else {
-			dispatch({
-				type: "logout",
-				payload: { user: null, errorMessage: message },
-			});
-		}
+		dispatch({ type: "logout", payload: { success, message } });
 	}, []);
 
 	const getProfile = useCallback(async () => {
-		const { success, message, user } = await getProfileApi();
-		if (success) {
-			dispatch({
-				type: "get_profile",
-				payload: { user, errorMessage: "" },
-			});
-		} else {
-			dispatch({
-				type: "get_profile",
-				payload: { user: null, errorMessage: message },
-			});
-		}
+		const { success, user } = await getProfileApi();
+		dispatch({ type: "get_profile", payload: { success, user } });
 	}, []);
 
 	const updateProfile = useCallback(async (updatedUser: IUser) => {
 		const { success, message } = await updateProfileApi(updatedUser);
-		if (success) {
-			const { user } = await getProfileApi();
-			dispatch({
-				type: "update_profile",
-				payload: { user, errorMessage: "" },
-			});
-		} else {
-			dispatch({
-				type: "update_profile",
-				payload: { user: null, errorMessage: message },
-			});
-		}
+		dispatch({ type: "update_profile", payload: { success, message } });
 	}, []);
 
 	useEffect(() => {
 		let ignore = false;
-		if (!ignore) {
-			getProfile();
-		}
+		!ignore && getProfile();
 
 		return () => {
 			ignore = true;
 		};
-	}, [getProfile]);
+	}, [getProfile, authState.message]);
 
 	const providerItem = {
 		authState: memoizedState,

@@ -18,10 +18,10 @@ import {
 
 interface ICommentContext {
 	commentState: typeof commentInitialState;
-	getComments: () => Promise<void>;
-	createComment: (comment: IComment) => Promise<void>;
-	updateComment: (id: string, comment: IComment) => Promise<void>;
-	deleteComment: (id: string) => Promise<void>;
+	getComments(): Promise<void>;
+	createComment(comment: IComment): Promise<void>;
+	updateComment(id: string, comment: IComment): Promise<void>;
+	deleteComment(id: string): Promise<void>;
 }
 
 const CommentContext = createContext<ICommentContext | null>(null);
@@ -39,45 +39,23 @@ export const CommentContextProvider: FC<Props> = ({ children }) => {
 	const memoizedState = useMemo(() => commentState, [commentState]);
 
 	const createComment = useCallback(async (comment: IComment) => {
-		const { success } = await createCommentApi(comment);
-		if (success) {
-			const { comments } = await getCommentsApi();
-			dispatch({
-				type: "create_comment",
-				payload: { comments },
-			});
-		}
+		const { success, message } = await createCommentApi(comment);
+		dispatch({ type: "create_comment", payload: { success, message } });
 	}, []);
 
 	const getComments = useCallback(async () => {
 		const { success, comments } = await getCommentsApi();
-		success &&
-			dispatch({
-				type: "get_comments",
-				payload: { comments },
-			});
+		dispatch({ type: "get_comments", payload: { success, comments } });
 	}, []);
 
 	const updateComment = useCallback(async (id: string, comment: IComment) => {
-		const { success } = await updateCommentApi(id, comment);
-		if (success) {
-			const { comments } = await getCommentsApi();
-			dispatch({
-				type: "update_comment",
-				payload: { comments },
-			});
-		}
+		const { success, message } = await updateCommentApi(id, comment);
+		dispatch({ type: "update_comment", payload: { success, message } });
 	}, []);
 
 	const deleteComment = useCallback(async (id: string) => {
-		const { success } = await deleteCommentApi(id);
-		if (success) {
-			const { comments } = await getCommentsApi();
-			dispatch({
-				type: "delete_comment",
-				payload: { comments },
-			});
-		}
+		const { success, message } = await deleteCommentApi(id);
+		dispatch({ type: "delete_comment", payload: { success, message } });
 	}, []);
 
 	useEffect(() => {
@@ -89,7 +67,7 @@ export const CommentContextProvider: FC<Props> = ({ children }) => {
 		return () => {
 			ignore = true;
 		};
-	}, [getComments]);
+	}, [getComments, commentState.message]);
 
 	const providerItem = {
 		commentState: memoizedState,

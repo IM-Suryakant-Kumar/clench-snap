@@ -1,7 +1,9 @@
 import { IComment } from "../types";
 
 export interface ICommentState {
-	comments: IComment[] | null;
+	success?: boolean;
+	message?: string | null;
+	comments?: IComment[] | null;
 }
 
 export interface ICommentAction {
@@ -10,10 +12,15 @@ export interface ICommentAction {
 }
 
 export const commentInitialState: ICommentState = {
+	success: false,
+	message: null,
 	comments: null,
 };
 
-export const commentReducer = (state: ICommentState, action: ICommentAction) => {
+export const commentReducer = (
+	state: ICommentState,
+	action: ICommentAction
+) => {
 	switch (action.type) {
 		case "create_comment":
 			return { ...state, ...action.payload };

@@ -7,7 +7,7 @@ import { loadingWrapper } from "../utils";
 const Signup = () => {
 	const pathname = useLocation().state?.redirectTo;
 	const {
-		authState: { errorMessage },
+		authState: { message },
 		signup,
 	} = useAuth();
 	const {
@@ -24,7 +24,7 @@ const Signup = () => {
 			const username = formData.get("username");
 			const email = formData.get("email");
 			const password = formData.get("password");
-			signup({ name, username, email, password } as IUser);
+			await signup({ name, username, email, password } as IUser);
 		};
 
 		loadingWrapper(submittingStart, submittingStop, fn);
@@ -40,10 +40,8 @@ const Signup = () => {
 					Sign Up
 				</h1>
 				{/* messages */}
-				{errorMessage && (
-					<span className="text-red-500 text-center text-sm">
-						{errorMessage}
-					</span>
+				{message && (
+					<span className="text-red-500 text-center text-sm">{message}</span>
 				)}
 				<input
 					className="outline-none border-b-2 border-logo-cl bg-inherit"

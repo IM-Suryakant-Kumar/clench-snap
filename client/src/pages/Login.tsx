@@ -4,13 +4,13 @@ import { IUser } from "../types";
 import { loadingWrapper } from "../utils";
 
 const Login = () => {
-	const state = useLocation().state;
-	const pathname = state?.redirectTo;
-	const message = state?.message;
 	const {
-		authState: { errorMessage },
+		authState: { message: errorMessage },
 		login,
 	} = useAuth();
+	const state = useLocation().state;
+	const pathname = state?.redirectTo;
+	const message = errorMessage || state?.message;
 	const {
 		loadingState: { loading, submitting },
 		submittingStart,
@@ -52,11 +52,6 @@ const Login = () => {
 				{/* messages */}
 				{message && (
 					<span className="text-red-500 text-center text-sm">{message}</span>
-				)}
-				{errorMessage && (
-					<span className="text-red-500 text-center text-sm">
-						{errorMessage}
-					</span>
 				)}
 				<input
 					className="outline-none border-b-2 border-logo-cl bg-inherit"

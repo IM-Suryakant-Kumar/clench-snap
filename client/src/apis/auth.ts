@@ -11,19 +11,18 @@ import {
 export const signup = async (cred: IUser) =>
 	asyncWrapper(async () => {
 		const { data } = (await axios.post("/auth/signup", cred)) as IApiRes;
-		AddTokenToLocalStorage(data.token);
-		toast.success(data.message);
+		data?.token && AddTokenToLocalStorage(data?.token);
+    data?.message && (toast.success(data.message))
 		return data;
 	});
 
 export const login = async (cred: IUser) =>
 	asyncWrapper(async () => {
 		const { data } = (await axios.post("/auth/login", cred)) as IApiRes;
-		AddTokenToLocalStorage(data.token);
-		toast.success(data.message);
+		data?.token && AddTokenToLocalStorage(data?.token);
+    data?.message && (toast.success(data.message))
 		return data;
 	});
-
 
 export const logout = async () =>
 	asyncWrapper(async () => {

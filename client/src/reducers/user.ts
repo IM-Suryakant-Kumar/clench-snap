@@ -1,7 +1,9 @@
 import { IUser } from "../types";
 
 interface IUserState {
-	users: IUser[] | null;
+	success?: boolean;
+	message?: string | null;
+	users?: IUser[] | null;
 }
 
 interface IUserAction {
@@ -10,6 +12,8 @@ interface IUserAction {
 }
 
 export const userInitialState: IUserState = {
+	success: false,
+  message: null,
 	users: null,
 };
 
