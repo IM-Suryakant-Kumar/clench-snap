@@ -30,11 +30,7 @@ export const UserContextProvider: React.FC<Props> = ({ children }) => {
 
 	const getUsers = useCallback(async () => {
 		const { success, users } = await getUsersApi();
-		success &&
-			dispatch({
-				type: "get_users",
-				payload: { success, users },
-			});
+		dispatch({ type: "get_users", payload: { success, users } });
 	}, []);
 
 	useEffect(() => {
