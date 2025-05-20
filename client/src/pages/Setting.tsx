@@ -1,10 +1,9 @@
 import { MdOutlineModeEditOutline } from "react-icons/md";
-import { useAuth, useLoading } from "../contexts";
+import { useAuth, useLoading, useUser } from "../contexts";
 import { useState } from "react";
 import { clodinary } from "../apis";
 import { toast } from "react-toastify";
 import { ProfilePic } from "../components";
-import { IUser } from "../types";
 import { loadingWrapper } from "../utils";
 
 const Setting = () => {
@@ -13,6 +12,7 @@ const Setting = () => {
 		logout,
 		updateProfile,
 	} = useAuth();
+	const { getUsers } = useUser();
 	const {
 		loadingState: { loading, submitting },
 		loadingStart,
@@ -33,25 +33,18 @@ const Setting = () => {
 		e.preventDefault();
 		const fn = async () => {
 			const formData = new FormData(e.currentTarget);
-			const name = formData.get("name");
-			const username = formData.get("username");
-			const email = formData.get("email");
+			const name = formData.get("name") as string;
+			const username = formData.get("username") as string;
+			const email = formData.get("email") as string;
 			let avatar: string = user?.avatar as string;
-			const bio = formData.get("bio");
-			const website = formData.get("website");
+			const bio = formData.get("bio") as string;
+			const website = formData.get("website") as string;
 			const file = formData.get("avatar") as File;
 
 			file && (avatar = await clodinary(file));
 
-			await updateProfile({
-				_id: user?._id,
-				name,
-				username,
-				email,
-				avatar,
-				bio,
-				website,
-			} as IUser);
+			await updateProfile({ name, username, email, avatar, bio, website });
+			await getUsers();
 
 			toast.success("Successfully Updated!");
 		};

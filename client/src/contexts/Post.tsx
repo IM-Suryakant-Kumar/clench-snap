@@ -3,7 +3,6 @@ import {
 	FC,
 	useCallback,
 	useContext,
-	useEffect,
 	useMemo,
 	useReducer,
 } from "react";
@@ -35,34 +34,42 @@ export const PostContextProvider: FC<Props> = ({ children }) => {
 	const [postState, dispatch] = useReducer(postReducer, postInitialState);
 	const memoizedState = useMemo(() => postState, [postState]);
 
-	const createPost = useCallback(async (post: IPost) => {
-		const { success, message } = await createPostApi(post);
-		dispatch({ type: "create_post", payload: { success, message } });
-	}, []);
-
 	const getPosts = useCallback(async () => {
 		const { success, posts } = await getPostsApi();
 		dispatch({ type: "get_posts", payload: { success, posts } });
 	}, []);
 
-	const updatePost = useCallback(async (id: string, post: IPost) => {
-		const { success, message } = await updatePostApi(id, post);
-		dispatch({ type: "create_post", payload: { success, message } });
-	}, []);
+	const createPost = useCallback(
+		async (post: IPost) => {
+			const { success, message } = await createPostApi(post);
+			success && (await getPosts());
+			!success &&
+				dispatch({ type: "create_post", payload: { success, message } });
+		},
+		[getPosts]
+	);
 
-	const deletePost = useCallback(async (id: string) => {
-		const { success, message } = await deletePostApi(id);
-		dispatch({ type: "create_post", payload: { success, message } });
-	}, []);
+	const updatePost = useCallback(
+		async (id: string, post: IPost) => {
+			const { success, message } = await updatePostApi(id, post);
+			success && (await getPosts());
+			!success &&
+				dispatch({ type: "create_post", payload: { success, message } });
+		},
+		[getPosts]
+	);
 
-	useEffect(() => {
-		let ignore = false;
-		!ignore && getPosts();
+	const deletePost = useCallback(
+		async (id: string) => {
+			const { success, message } = await deletePostApi(id);
+			success && (await getPosts());
+			!success &&
+				dispatch({ type: "create_post", payload: { success, message } });
+		},
+		[getPosts]
+	);
 
-		return () => {
-			ignore = true;
-		};
-	}, [getPosts, postState.message]);
+	!memoizedState.posts && getPosts();
 
 	const providerItem = {
 		postState: memoizedState,

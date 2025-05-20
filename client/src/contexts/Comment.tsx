@@ -3,7 +3,6 @@ import {
 	FC,
 	useCallback,
 	useContext,
-	useEffect,
 	useMemo,
 	useReducer,
 } from "react";
@@ -38,36 +37,43 @@ export const CommentContextProvider: FC<Props> = ({ children }) => {
 	);
 	const memoizedState = useMemo(() => commentState, [commentState]);
 
-	const createComment = useCallback(async (comment: IComment) => {
-		const { success, message } = await createCommentApi(comment);
-		dispatch({ type: "create_comment", payload: { success, message } });
-	}, []);
-
 	const getComments = useCallback(async () => {
 		const { success, comments } = await getCommentsApi();
 		dispatch({ type: "get_comments", payload: { success, comments } });
 	}, []);
 
-	const updateComment = useCallback(async (id: string, comment: IComment) => {
-		const { success, message } = await updateCommentApi(id, comment);
-		dispatch({ type: "update_comment", payload: { success, message } });
-	}, []);
+	const createComment = useCallback(
+		async (comment: IComment) => {
+			const { success, message } = await createCommentApi(comment);
+			success && (await getComments());
+			!success &&
+				dispatch({ type: "create_comment", payload: { success, message } });
+		},
+		[getComments]
+	);
 
-	const deleteComment = useCallback(async (id: string) => {
-		const { success, message } = await deleteCommentApi(id);
-		dispatch({ type: "delete_comment", payload: { success, message } });
-	}, []);
+	const updateComment = useCallback(
+		async (id: string, comment: IComment) => {
+			const { success, message } = await updateCommentApi(id, comment);
+			success && (await getComments());
+			!success &&
+				dispatch({ type: "update_comment", payload: { success, message } });
+		},
+		[getComments]
+	);
 
-	useEffect(() => {
-		let ignore = false;
-		if (!ignore) {
-			getComments();
-		}
+	const deleteComment = useCallback(
+		async (id: string) => {
+			const { success, message } = await deleteCommentApi(id);
+			success && (await getComments());
+			!success &&
+				dispatch({ type: "delete_comment", payload: { success, message } });
+		},
+		[getComments]
+	);
 
-		return () => {
-			ignore = true;
-		};
-	}, [getComments, commentState.message]);
+	// fetching user and we have to call getProfile explicitly whenever update happen
+	!memoizedState.comments && getComments();
 
 	const providerItem = {
 		commentState: memoizedState,

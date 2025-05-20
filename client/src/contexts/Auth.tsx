@@ -4,7 +4,6 @@ import {
 	ReactNode,
 	useCallback,
 	useContext,
-	useEffect,
 	useMemo,
 	useReducer,
 } from "react";
@@ -38,39 +37,42 @@ export const AuthContextProvider: FC<Props> = ({ children }) => {
 	const [authState, dispatch] = useReducer(authReducer, initialAuthState);
 	const memoizedState = useMemo(() => authState, [authState]);
 
-	const signup = useCallback(async (cred: IUser) => {
-		const { success, message } = await signupApi(cred);
-		dispatch({ type: "signup", payload: { success, message } });
+	const getProfile = useCallback(async () => {
+		const { success, user } = await getProfileApi();
+		dispatch({ type: "get_profile", payload: { success, user } });
 	}, []);
 
-	const login = useCallback(async (cred: IUser) => {
-		const { success, message } = await loginApi(cred);
-		dispatch({ type: "login", payload: { success, message } });
-	}, []);
+	const signup = useCallback(
+		async (cred: IUser) => {
+			const { success, message } = await signupApi(cred);
+			success && (await getProfile());
+			!success && dispatch({ type: "signup", payload: { success, message } });
+		},
+		[getProfile]
+	);
+
+	const login = useCallback(
+		async (cred: IUser) => {
+			const { success, message } = await loginApi(cred);
+			success && (await getProfile());
+			!success && dispatch({ type: "login", payload: { success, message } });
+		},
+		[getProfile]
+	);
 
 	const logout = useCallback(async () => {
 		const { success, message } = await logoutApi();
 		dispatch({ type: "logout", payload: { success, message } });
 	}, []);
 
-	const getProfile = useCallback(async () => {
-		const { success, user } = await getProfileApi();
-		dispatch({ type: "get_profile", payload: { success, user } });
-	}, []);
-
 	const updateProfile = useCallback(async (updatedUser: IUser) => {
 		const { success, message } = await updateProfileApi(updatedUser);
-		dispatch({ type: "update_profile", payload: { success, message } });
-	}, []);
+    success && (await getProfile());
+		!success && dispatch({ type: "update_profile", payload: { success, message } });
+	}, [getProfile]);
 
-	useEffect(() => {
-		let ignore = false;
-		!ignore && getProfile();
-
-		return () => {
-			ignore = true;
-		};
-	}, [getProfile, authState.message]);
+	// fetching user and we have to call getProfile explicitly whenever update happen
+	!memoizedState.user && getProfile();
 
 	const providerItem = {
 		authState: memoizedState,

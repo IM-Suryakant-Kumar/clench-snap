@@ -1,7 +1,6 @@
 import { useLocation } from "react-router";
 import { Link } from "react-router";
 import { useAuth, useLoading } from "../contexts";
-import { IUser } from "../types";
 import { loadingWrapper } from "../utils";
 
 const Signup = () => {
@@ -20,11 +19,11 @@ const Signup = () => {
 		e.preventDefault();
 		const fn = async () => {
 			const formData = new FormData(e.currentTarget);
-			const name = formData.get("name");
-			const username = formData.get("username");
-			const email = formData.get("email");
-			const password = formData.get("password");
-			await signup({ name, username, email, password } as IUser);
+			const name = formData.get("name") as string;
+			const username = formData.get("username") as string;
+			const email = formData.get("email") as string;
+			const password = formData.get("password") as string;
+			await signup({ name, username, email, password });
 		};
 
 		loadingWrapper(submittingStart, submittingStop, fn);

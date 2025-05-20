@@ -4,12 +4,10 @@ import {
 	useReducer,
 	useContext,
 	useCallback,
-	useEffect,
 	useMemo,
 } from "react";
 import { userInitialState, userReducer } from "../reducers";
 import { getUsers as getUsersApi } from "../apis";
-import { useAuth } from "./Auth";
 
 interface IUserContext {
 	userState: typeof userInitialState;
@@ -26,23 +24,13 @@ type Props = {
 export const UserContextProvider: React.FC<Props> = ({ children }) => {
 	const [userState, dispatch] = useReducer(userReducer, userInitialState);
 	const memoizedState = useMemo(() => userState, [userState]);
-	const { authState } = useAuth();
 
 	const getUsers = useCallback(async () => {
 		const { success, users } = await getUsersApi();
 		dispatch({ type: "get_users", payload: { success, users } });
 	}, []);
 
-	useEffect(() => {
-		let ignore = false;
-		if (!ignore) {
-			getUsers();
-		}
-
-		return () => {
-			ignore = true;
-		};
-	}, [getUsers, authState.message, userState.message]);
+	!memoizedState.users && getUsers();
 
 	const providerItem = {
 		userState: memoizedState,

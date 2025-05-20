@@ -1,6 +1,5 @@
 import { Link, useLocation } from "react-router";
 import { useAuth, useLoading } from "../contexts";
-import { IUser } from "../types";
 import { loadingWrapper } from "../utils";
 
 const Login = () => {
@@ -23,9 +22,9 @@ const Login = () => {
 		e.preventDefault();
 		const fn = async () => {
 			const formData = new FormData(e.currentTarget);
-			const email = formData.get("email");
-			const password = formData.get("password");
-			login({ email, password } as IUser);
+			const email = formData.get("email") as string;
+			const password = formData.get("password") as string;
+			await login({ email, password });
 		};
 
 		loadingWrapper(submittingStart, submittingStop, fn);
@@ -34,7 +33,7 @@ const Login = () => {
 	const handleGuestLogin = async () => {
 		const fn = async () => {
 			const cred = { email: "clenchsnap@gmail.com", password: "secret" };
-			login(cred as IUser);
+			await login(cred);
 		};
 
 		loadingWrapper(loadingStart, loadingStop, fn);
