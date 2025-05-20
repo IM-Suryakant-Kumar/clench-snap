@@ -11,10 +11,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.authenticateUser = void 0;
 const jsonwebtoken_1 = require("jsonwebtoken");
-const async_wrapper_1 = require("./async-wrapper");
 const models_1 = require("../models");
 const errors_1 = require("../errors");
-exports.authenticateUser = (0, async_wrapper_1.asyncWrapper)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const authenticateUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const token = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(" ")[1];
     const { _id } = (0, jsonwebtoken_1.verify)(token, process.env.JWT_SECRET);
@@ -23,4 +22,5 @@ exports.authenticateUser = (0, async_wrapper_1.asyncWrapper)((req, res, next) =>
         throw new errors_1.UnauthenticatedError("Authentication failed!");
     req.user = user;
     next();
-}));
+});
+exports.authenticateUser = authenticateUser;

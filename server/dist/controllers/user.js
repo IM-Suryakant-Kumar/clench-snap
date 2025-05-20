@@ -10,12 +10,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteUser = exports.updateUser = exports.getUser = exports.getUsers = exports.createUser = void 0;
-const middlewares_1 = require("../middlewares");
 const models_1 = require("../models");
-exports.createUser = (0, middlewares_1.asyncWrapper)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield models_1.User.create(req.body);
-    res.status(201).json({ success: true, message: "Successfully Usered" });
-}));
+    res
+        .status(201)
+        .json({ success: true, message: "Created User successfully!" });
+});
+exports.createUser = createUser;
 const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const users = yield models_1.User.find();
     res.status(200).json({ success: true, users });
@@ -26,11 +28,17 @@ const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.status(200).json({ success: true, user });
 });
 exports.getUser = getUser;
-exports.updateUser = (0, middlewares_1.asyncWrapper)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield models_1.User.findByIdAndUpdate(req.params.id, req.body);
-    res.status(200).json({ success: true, message: "Successfully updated User" });
-}));
-exports.deleteUser = (0, middlewares_1.asyncWrapper)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res
+        .status(200)
+        .json({ success: true, message: "Updated User successfully!" });
+});
+exports.updateUser = updateUser;
+const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield models_1.User.findByIdAndDelete(req.params.id);
-    res.status(200).json({ success: true, message: "Successfully deleted User" });
-}));
+    res
+        .status(200)
+        .json({ success: true, message: "deleted User successfully!" });
+});
+exports.deleteUser = deleteUser;

@@ -13,15 +13,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateProfile = exports.getProfile = exports.logout = exports.login = exports.signup = void 0;
-const middlewares_1 = require("../middlewares");
 const models_1 = require("../models");
 const utils_1 = __importDefault(require("../utils"));
 const errors_1 = require("../errors");
-exports.signup = (0, middlewares_1.asyncWrapper)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield models_1.User.create(req.body);
-    (0, utils_1.default)(user, 201, res, "Successfully signed up.");
-}));
-exports.login = (0, middlewares_1.asyncWrapper)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    (0, utils_1.default)(user, 201, res, "Signed up successfully!");
+});
+exports.signup = signup;
+const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
     if (!(email && password))
         throw new errors_1.BadRequestError("Email and password is required.");
@@ -31,16 +31,20 @@ exports.login = (0, middlewares_1.asyncWrapper)((req, res) => __awaiter(void 0, 
     const isPasswordCorrect = yield user.comparePassword(password);
     if (!isPasswordCorrect)
         throw new errors_1.UnauthorizedError("Invalid credentials!");
-    (0, utils_1.default)(user, 200, res, "Successfully logged in");
-}));
-exports.logout = (0, middlewares_1.asyncWrapper)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    res.status(200).json({ success: true, message: "Successfully logged out." });
-}));
-exports.getProfile = (0, middlewares_1.asyncWrapper)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    (0, utils_1.default)(user, 200, res, "Logged in successfully!");
+});
+exports.login = login;
+const logout = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.status(200).json({ success: true, message: "Logged out successfully!" });
+});
+exports.logout = logout;
+const getProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.status(200).json({ success: true, user: req.user });
-}));
-exports.updateProfile = (0, middlewares_1.asyncWrapper)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+});
+exports.getProfile = getProfile;
+const updateProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { user, body } = req;
-    yield models_1.User.findByIdAndUpdate(user._id, body);
-    res.status(200).json({ success: true, message: "Successfully Updated!" });
-}));
+    yield models_1.User.findByIdAndUpdate(user === null || user === void 0 ? void 0 : user._id, body);
+    res.status(200).json({ success: true, message: "Updated successfully!" });
+});
+exports.updateProfile = updateProfile;

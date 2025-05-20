@@ -10,12 +10,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteComment = exports.updateComment = exports.getComment = exports.getComments = exports.createComment = void 0;
-const middlewares_1 = require("../middlewares");
 const models_1 = require("../models");
-exports.createComment = (0, middlewares_1.asyncWrapper)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield models_1.Comment.create(Object.assign({ author: req.user._id }, req.body));
+const createComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    yield models_1.Comment.create(Object.assign(Object.assign({}, req.body), { author: (_a = req.user) === null || _a === void 0 ? void 0 : _a._id }));
     res.status(201).json({ success: true, message: "Successfully Commented" });
-}));
+});
+exports.createComment = createComment;
 const getComments = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const comments = yield models_1.Comment.find();
     res.status(200).json({ success: true, comments });
@@ -26,15 +27,17 @@ const getComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     res.status(200).json({ success: true, comment });
 });
 exports.getComment = getComment;
-exports.updateComment = (0, middlewares_1.asyncWrapper)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updateComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield models_1.Comment.findByIdAndUpdate(req.params.id, req.body);
     res
         .status(200)
         .json({ success: true, message: "Successfully updated Comment" });
-}));
-exports.deleteComment = (0, middlewares_1.asyncWrapper)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+});
+exports.updateComment = updateComment;
+const deleteComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield models_1.Comment.findByIdAndDelete(req.params.id);
     res
         .status(200)
         .json({ success: true, message: "Successfully deleted Comment" });
-}));
+});
+exports.deleteComment = deleteComment;

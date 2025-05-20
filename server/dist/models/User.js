@@ -19,7 +19,7 @@ const jsonwebtoken_1 = require("jsonwebtoken");
 const userSchema = new mongoose_1.Schema({
     name: {
         type: String,
-        required: [true, "name is required"],
+        required: [true, "Please provide name"],
         minlength: [
             3,
             "Name should not be less than 3 greater than 20 characters",
@@ -31,7 +31,7 @@ const userSchema = new mongoose_1.Schema({
     },
     username: {
         type: String,
-        required: [true, "username is required"],
+        required: [true, "Please provide username"],
         minlength: [
             3,
             "Username should not be less than 3 greater than 20 characters",
@@ -44,12 +44,12 @@ const userSchema = new mongoose_1.Schema({
     },
     email: {
         type: String,
-        required: [true, "email is required"],
+        required: [true, "Please provide email"],
         unique: true,
     },
     password: {
         type: String,
-        required: [true, "password is required"],
+        required: [true, "Please provide password"],
         minlength: [3, "Password should not be less than 3 characters"],
         select: false,
     },

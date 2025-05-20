@@ -7,7 +7,7 @@ const userSchema = new Schema<IUser>(
 	{
 		name: {
 			type: String,
-			required: [true, "name is required"],
+			required: [true, "Please provide name"],
 			minlength: [
 				3,
 				"Name should not be less than 3 greater than 20 characters",
@@ -19,7 +19,7 @@ const userSchema = new Schema<IUser>(
 		},
 		username: {
 			type: String,
-			required: [true, "username is required"],
+			required: [true, "Please provide username"],
 			minlength: [
 				3,
 				"Username should not be less than 3 greater than 20 characters",
@@ -32,12 +32,12 @@ const userSchema = new Schema<IUser>(
 		},
 		email: {
 			type: String,
-			required: [true, "email is required"],
+			required: [true, "Please provide email"],
 			unique: true,
 		},
 		password: {
 			type: String,
-			required: [true, "password is required"],
+			required: [true, "Please provide password"],
 			minlength: [3, "Password should not be less than 3 characters"],
 			select: false,
 		},
@@ -69,4 +69,4 @@ userSchema.methods.createJWTToken = function () {
 	});
 };
 
-export const User = model<IUser | any>("User", userSchema);
+export const User = model<IUser>("User", userSchema);
