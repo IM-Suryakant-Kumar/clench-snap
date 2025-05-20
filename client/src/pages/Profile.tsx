@@ -34,26 +34,26 @@ const Profile = () => {
 		posts?.find((sp) => sp._id === p)
 	);
 	const newUserLikedPosts = posts?.filter((p) =>
-		p.liked.includes(newUser?._id as string)
+		p.liked?.includes(newUser?._id as string)
 	);
 	const newUserSavedPosts = posts?.filter((p) =>
-		p.saved.includes(newUser?._id as string)
+		p.saved?.includes(newUser?._id as string)
 	);
 
 	// handleFollowing
 	const handleFollowing = async (item: IUser) => {
 		const fn = async () => {
 			// followers
-			const followers = item.followers.includes(user?._id as string)
-				? item.followers.filter((userId) => userId !== user?._id)
-				: [...item.followers, user?._id];
+			const followers = item.followers?.includes(user?._id as string)
+				? item.followers?.filter((userId) => userId !== user?._id)
+				: [...item.followers!, user?._id];
 
 			await updateProfile({
 				followers,
 			} as IUser);
 
 			// followings
-			const followings = user?.followings.includes(item._id)
+			const followings = user?.followings?.includes(item._id!)
 				? user.followings.filter((userId) => item._id !== userId)
 				: [...(user?.followings as string[]), item._id];
 

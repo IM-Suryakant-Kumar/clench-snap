@@ -45,7 +45,7 @@ const PostModal = () => {
 			image && (image = (await postCloudinary(image as File)) as string);
 
 			postToEdit
-				? await updatePost(postToEdit._id, {
+				? await updatePost(postToEdit._id!, {
 						content,
 						image,
 				  } as IPost)

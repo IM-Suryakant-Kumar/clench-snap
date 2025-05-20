@@ -32,10 +32,10 @@ const Navbar = () => {
 		if (searchedText) {
 			setSearchedUsers(
 				users?.filter((user) => {
-					if (user.name.toLowerCase().includes(searchedText.toLowerCase()))
+					if (user.name?.toLowerCase().includes(searchedText.toLowerCase()))
 						return true;
 					else if (
-						user.username.toLowerCase().includes(searchedText.toLowerCase())
+						user.username?.toLowerCase().includes(searchedText.toLowerCase())
 					)
 						return true;
 					return false;
@@ -63,8 +63,8 @@ const Navbar = () => {
 				>
 					{user ? (
 						<ProfilePic
-							name={user.name}
-							avatar={user.avatar}
+							name={user.name!}
+							avatar={user.avatar!}
 							width="1.5rem"
 							height="1.5rem"
 							size="0.5rem"

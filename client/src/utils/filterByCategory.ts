@@ -6,8 +6,8 @@ export const filteredByCategory = (posts: IPost[], cat: string) => {
 	cat === "recent" && (filteredPosts = filteredPosts.reverse());
 	cat === "older" && (filteredPosts = posts);
 	cat === "trending" &&
-		(filteredPosts = filteredPosts.sort(
-			(a, b) => b.liked.length - a.liked.length
+		(filteredPosts = filteredPosts?.sort(
+			(a, b) => (b.liked?.length ?? 1) - (a.liked?.length ?? 1)
 		));
 
 	return filteredPosts;

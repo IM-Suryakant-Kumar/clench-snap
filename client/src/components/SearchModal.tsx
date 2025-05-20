@@ -20,8 +20,8 @@ const SearchModal: React.FC<Props> = ({ users }) => {
 							width="2rem"
 							height="2rem"
 							size="0.6rem"
-							avatar={user.avatar}
-							name={user.name}
+							avatar={user.avatar!}
+							name={user.name!}
 						/>
 						<p>{user.name}</p>
 					</Link>

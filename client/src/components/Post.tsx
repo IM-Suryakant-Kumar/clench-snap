@@ -26,17 +26,17 @@ const Post: React.FC<Props> = ({ post }) => {
 	const [showModalId, setShowModalId] = useState<string>("");
 
 	const handleLike = async () => {
-		const liked = post?.liked.includes(user?._id as string)
+		const liked = post?.liked?.includes(user?._id as string)
 			? post.liked.filter((uid) => uid !== user?._id)
 			: [...(post?.liked as string[]), user?._id];
-		await updatePost(post._id, { liked } as IPost);
+		await updatePost(post._id!, { liked } as IPost);
 	};
 
 	const handleSave = async () => {
-		const saved = post?.saved.includes(user?._id as string)
+		const saved = post?.saved?.includes(user?._id as string)
 			? post.saved.filter((uid) => uid !== user?._id)
 			: [...(post?.saved as string[]), user?._id];
-		await updatePost(post._id, { saved } as IPost);
+		await updatePost(post._id!, { saved } as IPost);
 	};
 
 	const handleActionModal = (postId: string) => {
@@ -61,18 +61,18 @@ const Post: React.FC<Props> = ({ post }) => {
 				</Link>
 				<div
 					className="ml-auto cursor-pointer text-md"
-					onClick={() => handleActionModal(post._id)}
+					onClick={() => handleActionModal(post._id!)}
 				>
 					<HiOutlineDotsVertical />
 				</div>
 				{/* action modals */}
 				{showModalId === post._id && (
-					<ActionModal postToEdit={post} postUserId={post.author} />
+					<ActionModal postToEdit={post} postUserId={post.author!} />
 				)}
 			</div>
 			<p className="p-[0.5em]">
-				{post.content.length >= 100
-					? post.content.substring(0, 99) +
+				{post.content!.length >= 100
+					? post.content!.substring(0, 99) +
 					  <Link to={`/post/${post._id}`}>&nbsp;...</Link>
 					: post.content}
 			</p>
@@ -83,14 +83,14 @@ const Post: React.FC<Props> = ({ post }) => {
 			)}
 			<div className="p-[0.5em] flex items-center text-xl">
 				<div className="cursor-pointer" onClick={handleLike}>
-					{post.liked.includes(user?._id as string) ? (
+					{post.liked?.includes(user?._id as string) ? (
 						<FaHeart />
 					) : (
 						<FaRegHeart />
 					)}
 				</div>{" "}
 				<p className="text-[1rem] font-normal ml-[0.5em]">
-					{post.liked.length}
+					{post.liked?.length}
 				</p>
 				<div className="cursor-pointer ml-[1em]">
 					<Link to={`/post/${post._id}`}>
@@ -98,7 +98,7 @@ const Post: React.FC<Props> = ({ post }) => {
 					</Link>
 				</div>
 				<p className="text-[1rem] font-normal ml-[0.5em]">
-					{post.comments.length}
+					{post.comments?.length}
 				</p>
 				<div className="cursor-pointer ml-auto" onClick={handleSave}>
 					{post?.saved?.includes(user?._id as string) ? (

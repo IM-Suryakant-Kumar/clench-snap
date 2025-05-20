@@ -34,25 +34,25 @@ const ActionModal: React.FC<Props> = ({ postToEdit, postUserId }) => {
 
 	const handleEdit = async () => {
 		setPostToEdit(postToEdit);
-		setContent(postToEdit.content);
+		setContent(postToEdit.content!);
 		handleToggle();
 	};
 
-	const handleDelete = async () => await deletePost(postToEdit._id);
+	const handleDelete = async () => await deletePost(postToEdit._id!);
 
 	const handleFollowing = async () => {
 		const postUser = users?.find((item) => item._id === postUserId);
 		const fn = async () => {
 			// followers
-			const followers = postUser?.followers.includes(user?._id as string)
-				? postUser.followers.filter((userId) => userId !== user?._id)
+			const followers = postUser?.followers!.includes(user?._id as string)
+				? postUser.followers!.filter((userId) => userId !== user?._id)
 				: [...(postUser?.followers as string[]), user?._id];
 
 			await updateProfile({ followers } as IUser);
 
 			// followings
-			const followings = user?.followings.includes(postUserId)
-				? user.followings.filter((userId) => postUserId !== userId)
+			const followings = user?.followings!.includes(postUserId)
+				? user.followings!.filter((userId) => postUserId !== userId)
 				: [...(user?.followings as string[]), postUserId];
 
 			await updateProfile({ followings } as IUser);
