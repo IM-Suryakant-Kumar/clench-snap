@@ -30,9 +30,7 @@ const Profile = () => {
 	const newUser = users?.find(
 		(item) => item.username === username || item._id === username
 	);
-	const newUserPosts = newUser?.posts?.map((p) =>
-		posts?.find((sp) => sp._id === p)
-	);
+	const newUserPosts = posts?.filter((p) => p.author === user?._id);
 	const newUserLikedPosts = posts?.filter((p) =>
 		p.liked?.includes(newUser?._id as string)
 	);

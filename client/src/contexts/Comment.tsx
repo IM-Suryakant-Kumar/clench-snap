@@ -3,6 +3,7 @@ import {
 	FC,
 	useCallback,
 	useContext,
+	useEffect,
 	useMemo,
 	useReducer,
 } from "react";
@@ -14,6 +15,7 @@ import {
 	updateComment as updateCommentApi,
 	deleteComment as deleteCommentApi,
 } from "../apis";
+import { useAuth } from "./Auth";
 
 interface ICommentContext {
 	commentState: typeof commentInitialState;
@@ -36,6 +38,7 @@ export const CommentContextProvider: FC<Props> = ({ children }) => {
 		commentInitialState
 	);
 	const memoizedState = useMemo(() => commentState, [commentState]);
+	const { authState } = useAuth();
 
 	const getComments = useCallback(async () => {
 		const { success, comments } = await getCommentsApi();
@@ -72,8 +75,16 @@ export const CommentContextProvider: FC<Props> = ({ children }) => {
 		[getComments]
 	);
 
-	// fetching user and we have to call getProfile explicitly whenever update happen
-	!memoizedState.comments && getComments();
+	useEffect(() => {
+		let ignore = false;
+		if (!ignore) {
+			getComments();
+		}
+
+		return () => {
+			ignore = true;
+		};
+	}, [getComments, authState.user]);
 
 	const providerItem = {
 		commentState: memoizedState,

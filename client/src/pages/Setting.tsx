@@ -35,7 +35,7 @@ const Setting = () => {
 			const formData = new FormData(e.currentTarget);
 			const name = formData.get("name") as string;
 			const username = formData.get("username") as string;
-			const email = formData.get("email") as string;
+			// const email = formData.get("email") as string;
 			let avatar: string = user?.avatar as string;
 			const bio = formData.get("bio") as string;
 			const website = formData.get("website") as string;
@@ -43,7 +43,7 @@ const Setting = () => {
 
 			file && (avatar = await clodinary(file));
 
-			await updateProfile({ name, username, email, avatar, bio, website });
+			await updateProfile({ name, username, avatar, bio, website });
 			await getUsers();
 
 			toast.success("Successfully Updated!");
@@ -127,6 +127,7 @@ const Setting = () => {
 				type="email"
 				name="email"
 				defaultValue={user?.email}
+        disabled
 			/>
 			{/* Bio */}
 			<label

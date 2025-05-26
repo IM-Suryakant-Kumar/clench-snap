@@ -4,6 +4,7 @@ import {
 	ReactNode,
 	useCallback,
 	useContext,
+	useEffect,
 	useMemo,
 	useReducer,
 } from "react";
@@ -71,8 +72,16 @@ export const AuthContextProvider: FC<Props> = ({ children }) => {
 		!success && dispatch({ type: "update_profile", payload: { success, message } });
 	}, [getProfile]);
 
-	// fetching user and we have to call getProfile explicitly whenever update happen
-	!memoizedState.user && getProfile();
+  useEffect(() => {
+    let ignore = false;
+    if(!ignore) {
+      getProfile();
+    }
+
+    return () => {
+      ignore = true;
+    }
+  }, [getProfile])
 
 	const providerItem = {
 		authState: memoizedState,
