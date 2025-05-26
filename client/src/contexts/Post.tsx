@@ -3,6 +3,7 @@ import {
 	FC,
 	useCallback,
 	useContext,
+	useEffect,
 	useMemo,
 	useReducer,
 } from "react";
@@ -14,6 +15,7 @@ import {
 	updatePost as updatePostApi,
 	deletePost as deletePostApi,
 } from "../apis";
+import { useAuth } from "./Auth";
 
 interface IPostContext {
 	postState: typeof postInitialState;
@@ -33,6 +35,7 @@ type Props = {
 export const PostContextProvider: FC<Props> = ({ children }) => {
 	const [postState, dispatch] = useReducer(postReducer, postInitialState);
 	const memoizedState = useMemo(() => postState, [postState]);
+	const { authState } = useAuth();
 
 	const getPosts = useCallback(async () => {
 		const { success, posts } = await getPostsApi();
@@ -69,7 +72,16 @@ export const PostContextProvider: FC<Props> = ({ children }) => {
 		[getPosts]
 	);
 
-	!memoizedState.posts && getPosts();
+	useEffect(() => {
+		let ignore = false;
+		if (!ignore) {
+			getPosts();
+		}
+
+		return () => {
+			ignore = true;
+		};
+	}, [getPosts, authState.user]);
 
 	const providerItem = {
 		postState: memoizedState,
