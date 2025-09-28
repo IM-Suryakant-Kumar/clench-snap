@@ -1,6 +1,6 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { FaHeart, FaRegComment, FaRegHeart } from "react-icons/fa";
 import { MdBookmark, MdOutlineBookmarkBorder } from "react-icons/md";
@@ -13,6 +13,8 @@ type Props = {
 };
 
 const Post: React.FC<Props> = ({ post }) => {
+  const pathname = useLocation().pathname;
+  const isPostPage = pathname.includes('post');
 	const {
 		authState: { user },
 	} = useAuth();
@@ -20,8 +22,6 @@ const Post: React.FC<Props> = ({ post }) => {
 		userState: { users },
 	} = useUser();
 	const { updatePost } = usePost();
-
-  console.log(post)
 
 	const postUser = users?.find((u) => post.author === u._id);
 
@@ -73,10 +73,16 @@ const Post: React.FC<Props> = ({ post }) => {
 				)}
 			</div>
 			<p className="p-[0.5em]">
-				{post.content!.length >= 100
-					? post.content!.substring(0, 99) +
-					  <Link to={`/post/${post._id}`}>&nbsp;...</Link>
-					: post.content}
+				{post.content!.length >= 100 && !isPostPage ? (
+					<>
+						{post.content!.substring(0, 99)}
+						<Link to={`/post/${post._id}`}>
+							<p className="text-logo-cl font-semibold mt-2">Show more</p>
+						</Link>
+					</>
+				) : (
+					post.content
+				)}
 			</p>
 			{post.image && (
 				<div className="my-[0.5em] border-[1px] border-gray-400">
