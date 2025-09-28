@@ -21,6 +21,8 @@ const Post: React.FC<Props> = ({ post }) => {
 	} = useUser();
 	const { updatePost } = usePost();
 
+  console.log(post)
+
 	const postUser = users?.find((u) => post.author === u._id);
 
 	const [showModalId, setShowModalId] = useState<string>("");

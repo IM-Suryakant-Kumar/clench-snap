@@ -13,7 +13,10 @@ exports.deleteComment = exports.updateComment = exports.getComment = exports.get
 const models_1 = require("../models");
 const createComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
-    yield models_1.Comment.create(Object.assign(Object.assign({}, req.body), { author: (_a = req.user) === null || _a === void 0 ? void 0 : _a._id }));
+    const comment = yield models_1.Comment.create(Object.assign(Object.assign({}, req.body), { author: (_a = req.user) === null || _a === void 0 ? void 0 : _a._id }));
+    yield models_1.Post.findByIdAndUpdate(req.body.post, {
+        $push: { comments: comment._id }
+    });
     res.status(201).json({ success: true, message: "Successfully Commented" });
 });
 exports.createComment = createComment;
@@ -35,7 +38,10 @@ const updateComment = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 });
 exports.updateComment = updateComment;
 const deleteComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield models_1.Comment.findByIdAndDelete(req.params.id);
+    const comment = yield models_1.Comment.findByIdAndDelete(req.params.id);
+    yield models_1.Post.findByIdAndUpdate(comment === null || comment === void 0 ? void 0 : comment.post, {
+        $pull: { comments: req.params.id }
+    });
     res
         .status(200)
         .json({ success: true, message: "Successfully deleted Comment" });

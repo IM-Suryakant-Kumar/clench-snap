@@ -1,9 +1,12 @@
 import { Response } from "express";
-import { Comment } from "../models";
+import { Comment, Post } from "../models";
 import { IRequest } from "../types";
 
 export const createComment = async (req: IRequest, res: Response) => {
-	await Comment.create({ ...req.body, author: req.user?._id });
+	const comment = await Comment.create({ ...req.body, author: req.user?._id });
+  await Post.findByIdAndUpdate(req.body.post, {
+    $push: { comments: comment._id }
+  });
 	res.status(201).json({ success: true, message: "Successfully Commented" });
 };
 
@@ -25,7 +28,10 @@ export const updateComment = async (req: IRequest, res: Response) => {
 };
 
 export const deleteComment = async (req: IRequest, res: Response) => {
-	await Comment.findByIdAndDelete(req.params.id);
+	const comment = await Comment.findByIdAndDelete(req.params.id);
+  await Post.findByIdAndUpdate(comment?.post, {
+    $pull: { comments: req.params.id }
+  });
 	res
 		.status(200)
 		.json({ success: true, message: "Successfully deleted Comment" });

@@ -16,6 +16,7 @@ import {
 	deletePost as deletePostApi,
 } from "../apis";
 import { useAuth } from "./Auth";
+import { useComment } from "./Comment";
 
 interface IPostContext {
 	postState: typeof postInitialState;
@@ -36,6 +37,7 @@ export const PostContextProvider: FC<Props> = ({ children }) => {
 	const [postState, dispatch] = useReducer(postReducer, postInitialState);
 	const memoizedState = useMemo(() => postState, [postState]);
 	const { authState } = useAuth();
+  const { commentState } = useComment();
 
 	const getPosts = useCallback(async () => {
 		const { success, posts } = await getPostsApi();
@@ -81,7 +83,7 @@ export const PostContextProvider: FC<Props> = ({ children }) => {
 		return () => {
 			ignore = true;
 		};
-	}, [getPosts, authState.user]);
+	}, [getPosts, authState.user, commentState.comments]);
 
 	const providerItem = {
 		postState: memoizedState,

@@ -14,13 +14,13 @@ const MainContextProvider: React.FC<Props> = ({ children }) => {
 		<LoadingContextProvider>
 			<AuthContextProvider>
 				<UserContextProvider>
+							<CommentContextProvider>
 					<PostContextProvider>
 						<PostModalContextProvider>
-							<CommentContextProvider>
                 {children}
-              </CommentContextProvider>
 						</PostModalContextProvider>
 					</PostContextProvider>
+              </CommentContextProvider>
 				</UserContextProvider>
 			</AuthContextProvider>
 		</LoadingContextProvider>
