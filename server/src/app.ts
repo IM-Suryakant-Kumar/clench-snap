@@ -40,3 +40,5 @@ app.use(errorHandlerMiddleware);
 		console.log(error);
 	}
 })();
+
+export default app;
