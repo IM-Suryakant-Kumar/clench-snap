@@ -13,7 +13,6 @@ import connectDB from "./db";
 import { authRouter, commentRouter, postRouter, userRouter } from "./routes";
 
 const PORT = process.env.PORT;
-const MONGO_URI = process.env.MONGO_URI;
 const CLIENT_URL = process.env.CLIENT_URL;
 
 const app = express();
@@ -32,7 +31,7 @@ app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 (async () => {
 	try {
-		await connectDB(MONGO_URI);
+		await connectDB();
 		app.listen(PORT, () =>
 			console.log(`App is running at http://localhost:${PORT}`)
 		);
@@ -40,3 +39,5 @@ app.use(errorHandlerMiddleware);
 		console.log(error);
 	}
 })();
+
+export default app;
