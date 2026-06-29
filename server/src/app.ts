@@ -1,8 +1,8 @@
 import "express-async-errors";
 import "dotenv/config";
 import express from "express";
-import helmet from "helmet";
 import cors from "cors";
+import helmet from "helmet";
 import morgan from "morgan";
 import {
 	authenticateUser,
